@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="400" viewBox="0 0 480 400" fill="none">
+  <defs>
+    <radialGradient id="sun-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#F3D9A5" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#D8AD61" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pyr-light" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E4BE78"/>
+      <stop offset="1" stop-color="#C98754"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Mặt trời phát tia -->
+  <circle cx="240" cy="170" r="120" fill="url(#sun-glow)"/>
+  <g stroke="#D8AD61" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round">
+    <line x1="240" y1="60" x2="240" y2="86"/>
+    <line x1="240" y1="254" x2="240" y2="280"/>
+    <line x1="130" y1="170" x2="156" y2="170"/>
+    <line x1="324" y1="170" x2="350" y2="170"/>
+    <line x1="162" y1="92" x2="180" y2="110"/>
+    <line x1="300" y1="230" x2="318" y2="248"/>
+    <line x1="318" y1="92" x2="300" y2="110"/>
+    <line x1="180" y1="230" x2="162" y2="248"/>
+  </g>
+  <circle cx="240" cy="170" r="54" stroke="#D8AD61" stroke-opacity=".5" stroke-width="1" stroke-dasharray="2 6"/>
+  <circle cx="240" cy="170" r="34" fill="#F3D9A5"/>
+
+  <!-- Chòm sao -->
+  <g stroke="#F3D9A5" stroke-opacity=".35" stroke-width="1">
+    <polyline points="40,92 78,60 112,74 138,36"/>
+    <polyline points="356,52 392,80 430,62 452,98"/>
+  </g>
+  <g fill="#F3D9A5">
+    <circle cx="40" cy="92" r="2"/><circle cx="78" cy="60" r="2.4"/><circle cx="112" cy="74" r="1.8"/>
+    <circle cx="356" cy="52" r="2"/><circle cx="392" cy="80" r="1.8"/><circle cx="452" cy="98" r="2.2"/>
+    <path d="M138 26 L140.5 33.5 L148 36 L140.5 38.5 L138 46 L135.5 38.5 L128 36 L135.5 33.5 Z"/>
+    <path d="M430 52 L432 59.5 L439.5 62 L432 64.5 L430 72 L428 64.5 L420.5 62 L428 59.5 Z"/>
+  </g>
+
+  <!-- Kim tự tháp -->
+  <path d="M120 300 L178 214 L236 300 Z" fill="#34205E"/>
+  <path d="M178 214 L236 300 L196 300 Z" fill="url(#pyr-light)" fill-opacity=".85"/>
+  <path d="M262 300 L330 196 L398 300 Z" fill="#2A1850"/>
+  <path d="M330 196 L398 300 L352 300 Z" fill="url(#pyr-light)" fill-opacity=".9"/>
+  <g stroke="#D8AD61" stroke-opacity=".7" stroke-width="1.2" stroke-linejoin="round">
+    <path d="M120 300 L178 214 L236 300"/>
+    <path d="M262 300 L330 196 L398 300"/>
+  </g>
+
+  <!-- Đồi cát -->
+  <path d="M0 296 C80 270 160 318 260 292 C350 268 420 300 480 284 L480 400 L0 400 Z" fill="#1A0D33"/>
+  <path d="M0 296 C80 270 160 318 260 292 C350 268 420 300 480 284" stroke="#C98754" stroke-opacity=".55" stroke-width="1.2"/>
+  <path d="M0 340 C110 314 200 360 300 336 C380 318 430 344 480 330 L480 400 L0 400 Z" fill="#21123D"/>
+  <path d="M0 340 C110 314 200 360 300 336 C380 318 430 344 480 330" stroke="#D8AD61" stroke-opacity=".7" stroke-width="1.4"/>
+</svg>

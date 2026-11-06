@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="vi" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nhà Giả Kim – Paulo Coelho | Đặt mua sách</title>
+  <meta name="description" content="Nhà Giả Kim của Paulo Coelho – hành trình về giấc mơ, lòng dũng cảm và tiếng gọi của trái tim. Đọc thử, xem đánh giá và đặt mua sách, thanh toán COD hoặc chuyển khoản.">
+  <meta name="theme-color" content="#21123D">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="Nhà Giả Kim – Paulo Coelho">
+  <meta property="og:description" content="Một hành trình đầy cảm hứng về giấc mơ, lòng dũng cảm và việc lắng nghe tiếng gọi của trái tim.">
+  <meta property="og:image" content="images/sach-nha-gia-kim.png">
+  <meta property="og:locale" content="vi_VN">
+  <!-- TODO: thêm <link rel="canonical" href="https://ten-mien-that/"> khi có domain -->
+
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Một font duy nhất cho toàn trang: Be Vietnam Pro (hỗ trợ tiếng Việt tốt) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <!-- Tailwind CSS v4 (bản browser – tiện cho học tập/demo.
+       Khi triển khai production: build bằng Tailwind CLI/Vite theo design.md) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-midnight: #21123D;
+      --color-royal: #34205E;
+      --color-antique-gold: #D8AD61;
+      --color-champagne: #F3D9A5;
+      --color-ivory: #F7F2E9;
+      --color-sand: #EAE0D2;
+      --color-terracotta: #C98754;
+      --color-ink: #292338;
+      --color-bronze: #845A24;
+      --color-footer: #180E2C;
+      --font-display: "Be Vietnam Pro", system-ui, sans-serif;
+      --font-body: "Be Vietnam Pro", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- CSS tùy chỉnh -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="preload" as="image" href="images/sach-nha-gia-kim.png" fetchpriority="high">
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+
+  <!-- Slick carousel (cần jQuery) – dùng cho slider đánh giá -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+
+  <!-- JavaScript (defer: chạy theo thứ tự sau khi parse xong HTML) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" defer></script>
+  <!-- StPageFlip – hiệu ứng lật trang sách cho mục Đọc thử -->
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js" defer></script>
+  <script src="js/data.js" defer></script>
+  <script src="js/navigation.js" defer></script>
+  <script src="js/media.js" defer></script>
+  <script src="js/preview.js" defer></script>
+  <script src="js/reviews.js" defer></script>
+  <script src="js/order.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+
+<body class="font-body text-ink bg-ivory">
+  <a href="#main" class="skip-link">Bỏ qua đến nội dung chính</a>
+
+  <!-- ===================== HEADER ===================== -->
+  <header id="site-header" class="site-header sticky top-0 z-40 bg-midnight text-ivory">
+    <div class="container-site flex h-[76px] items-center justify-between gap-3">
+      <a href="#gioi-thieu" class="flex items-center gap-3 shrink-0" aria-label="Nhà Giả Kim – về đầu trang">
+        <svg width="38" height="38" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="27" fill="none" stroke="#D8AD61" stroke-opacity=".45" stroke-width="1.5"/>
+          <g stroke="#D8AD61" stroke-width="2.5" stroke-linecap="round">
+            <line x1="32" y1="10" x2="32" y2="17"/><line x1="32" y1="47" x2="32" y2="54"/>
+            <line x1="10" y1="32" x2="17" y2="32"/><line x1="47" y1="32" x2="54" y2="32"/>
+            <line x1="16.5" y1="16.5" x2="21.5" y2="21.5"/><line x1="42.5" y1="42.5" x2="47.5" y2="47.5"/>
+            <line x1="47.5" y1="16.5" x2="42.5" y2="21.5"/><line x1="21.5" y1="42.5" x2="16.5" y2="47.5"/>
+          </g>
+          <circle cx="32" cy="32" r="9" fill="#F3D9A5"/>
+        </svg>
+        <span class="font-display text-xl font-semibold tracking-wide text-champagne max-[379px]:hidden">Nhà Giả Kim</span>
+      </a>
+
+      <nav aria-label="Điều hướng chính" class="hidden lg:block">
+        <ul class="flex items-center gap-8 text-[15px]">
+          <li><a class="nav-link" href="#gioi-thieu">Giới thiệu</a></li>
+          <li><a class="nav-link" href="#tac-gia">Tác giả</a></li>
+          <li><a class="nav-link" href="#truyen-thong">Truyền thông</a></li>
+          <li><a class="nav-link" href="#doc-thu">Đọc thử</a></li>
+          <li><a class="nav-link" href="#danh-gia">Đánh giá</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button type="button" data-open-order class="btn btn-primary btn-sm">
+          <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i> Mua ngay
+        </button>
+        <button type="button" id="nav-toggle" class="icon-btn lg:hidden" aria-expanded="false" aria-controls="mobile-nav" aria-label="Mở menu">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-nav" class="mobile-nav lg:hidden" hidden>
+      <nav aria-label="Điều hướng trên di động" class="container-site pb-6 pt-2">
+        <ul>
+          <li><a href="#gioi-thieu">Giới thiệu <i class="fa-solid fa-chevron-right text-xs text-antique-gold" aria-hidden="true"></i></a></li>
+          <li><a href="#tac-gia">Tác giả <i class="fa-solid fa-chevron-right text-xs text-antique-gold" aria-hidden="true"></i></a></li>
+          <li><a href="#truyen-thong">Truyền thông <i class="fa-solid fa-chevron-right text-xs text-antique-gold" aria-hidden="true"></i></a></li>
+          <li><a href="#doc-thu">Đọc thử <i class="fa-solid fa-chevron-right text-xs text-antique-gold" aria-hidden="true"></i></a></li>
+          <li><a href="#danh-gia">Đánh giá <i class="fa-solid fa-chevron-right text-xs text-antique-gold" aria-hidden="true"></i></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===================== HERO ===================== -->
+    <section id="gioi-thieu" class="hero relative overflow-hidden text-ivory" aria-labelledby="hero-title">
+      <!-- Chòm sao trang trí -->
+      <svg class="hero-deco left-[4%] top-10 hidden w-56 opacity-60 md:block" viewBox="0 0 220 140" fill="none" aria-hidden="true">
+        <g stroke="currentColor" stroke-opacity=".35" stroke-width="1">
+          <polyline points="12,108 58,72 96,86 140,38 196,52"/>
+          <line x1="96" y1="86" x2="118" y2="124"/>
+        </g>
+        <g fill="currentColor">
+          <circle cx="12" cy="108" r="2"/><circle cx="58" cy="72" r="2.4"/><circle cx="96" cy="86" r="1.8"/>
+          <circle cx="118" cy="124" r="1.6"/><circle cx="196" cy="52" r="2"/>
+          <path class="twinkle" d="M140 26 L142.5 35.5 L152 38 L142.5 40.5 L140 50 L137.5 40.5 L128 38 L137.5 35.5 Z"/>
+        </g>
+      </svg>
+      <svg class="hero-deco right-[6%] top-8 hidden w-24 lg:block" viewBox="0 0 100 100" aria-hidden="true">
+        <path class="twinkle" style="animation-delay:1.5s" fill="currentColor" fill-opacity=".7" d="M50 20 L54 46 L80 50 L54 54 L50 80 L46 54 L20 50 L46 46 Z"/>
+      </svg>
+      <!-- Đồi cát: lớp sóng cuối cùng tô màu nền section kế tiếp (ivory) để đường sóng chính là ranh giới 2 section -->
+      <svg class="hero-deco inset-x-0 -bottom-px h-20 w-full md:h-28 lg:h-32" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+        <!-- đồi cát phía sau (tím đậm) -->
+        <path d="M0 70 C200 30 420 100 700 66 C960 36 1180 90 1440 52 L1440 160 L0 160 Z" fill="#1A0D33" fill-opacity=".45"/>
+        <path d="M0 70 C200 30 420 100 700 66 C960 36 1180 90 1440 52" fill="none" stroke="#C98754" stroke-opacity=".3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+        <!-- đồi cát phía trước = nền section Tác giả -->
+        <path d="M0 118 C240 78 460 150 760 112 C1020 80 1220 128 1440 96 L1440 161 L0 161 Z" fill="#F7F2E9"/>
+        <path d="M0 118 C240 78 460 150 760 112 C1020 80 1220 128 1440 96" fill="none" stroke="#D8AD61" stroke-opacity=".7" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+      </svg>
+
+      <div class="container-site relative grid items-center gap-6 pb-24 pt-12 md:pb-32 lg:grid-cols-[1.1fr_.9fr] lg:gap-12 lg:pt-20">
+        <div class="text-center lg:text-left">
+          <p class="eyebrow reveal">Tác phẩm của Paulo Coelho</p>
+          <h1 id="hero-title" class="hero-title reveal mt-4" style="--delay:.08s">
+            Nhà Giả Kim<span class="sr-only"> – Paulo Coelho</span>
+          </h1>
+          <p class="reveal mx-auto mt-5 max-w-[36ch] text-lg font-medium leading-relaxed text-champagne md:text-xl lg:mx-0" style="--delay:.16s">
+            Một hành trình đầy cảm hứng về giấc mơ, lòng dũng cảm và việc lắng nghe tiếng gọi của trái tim.
+          </p>
+          <p class="reveal mx-auto mt-4 max-w-[52ch] text-[15px] text-ivory/75 md:text-base lg:mx-0" style="--delay:.24s">
+            Theo chân Santiago trên hành trình đi tìm kho báu và khám phá ý nghĩa của việc theo đuổi ước mơ.
+          </p>
+
+          <div class="reveal mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center lg:justify-start" style="--delay:.32s">
+            <button type="button" id="hero-cta" data-open-order class="btn btn-primary btn-lg">
+              Mua sách ngay <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </button>
+            <a href="#doc-thu" class="btn btn-outline-gold btn-lg">
+              <i class="fa-solid fa-book-open" aria-hidden="true"></i> Đọc thử
+            </a>
+          </div>
+
+          <ul class="hero-meta reveal mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ivory/80 lg:justify-start" style="--delay:.4s">
+            <li><i class="fa-solid fa-tag" aria-hidden="true"></i> Giá bán: <strong class="text-champagne" data-price>—</strong></li>
+            <li><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> Thanh toán khi nhận hàng</li>
+            <li><i class="fa-solid fa-building-columns" aria-hidden="true"></i> Hoặc chuyển khoản</li>
+          </ul>
+        </div>
+
+        <div class="book-stage reveal" style="--delay:.2s">
+          <div class="book-glow" aria-hidden="true"></div>
+          <div class="book-float">
+            <div class="book-3d">
+              <img src="images/sach-nha-gia-kim.png" width="720" height="1052" fetchpriority="high"
+                   alt="Bìa sách Nhà Giả Kim của Paulo Coelho, bản dịch Lê Chu Cầu – nền xanh đêm với họa tiết kim tự tháp, sa mạc và bầu trời sao màu vàng">
+            </div>
+          </div>
+          <div class="book-shadow" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TÁC GIẢ ===================== -->
+    <section id="tac-gia" class="section bg-ivory" aria-labelledby="author-title">
+      <div class="container-site grid items-center gap-14 lg:grid-cols-[5fr_7fr] lg:gap-20">
+        <figure class="reveal mx-auto w-full max-w-[400px] lg:max-w-none">
+          <div class="author-frame">
+            <!-- TODO: kiểm tra giấy phép ảnh; nên tải về images/ (WebP, độ phân giải cao) thay vì dùng link ngoài -->
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJz5a4S33Jd6Zetrh5OCxcJ7YCrPKhntb1sb21mn8HU0ULyTAjsRA71Y0&amp;s=10"
+                 width="480" height="600" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                 class="aspect-[4/5] object-cover object-top"
+                 onerror="this.onerror=null;this.src='images/author-portrait.svg'"
+                 alt="Chân dung nhà văn Paulo Coelho">
+          </div>
+          <figcaption class="mt-5 text-center text-sm text-ink/70">Paulo Coelho – nhà văn Brazil</figcaption>
+        </figure>
+
+        <div>
+          <p class="eyebrow eyebrow--light reveal">Về tác giả</p>
+          <h2 id="author-title" class="section-title reveal mt-3 text-royal" style="--delay:.08s">
+            Paulo Coelho – người kể chuyện của những giấc mơ
+          </h2>
+
+          <!-- Lưu ý: đối chiếu nguồn các thông tin tiểu sử/xuất bản trước khi đăng chính thức -->
+          <div class="reveal mt-6 space-y-4 text-[15px] leading-[1.8] md:text-base" style="--delay:.16s">
+            <p>
+              Paulo Coelho sinh năm 1947 tại Rio de Janeiro, Brazil. Trước khi trở thành nhà văn, ông từng viết lời
+              bài hát, làm việc trong lĩnh vực sân khấu và báo chí. Chuyến hành hương trên con đường Santiago de
+              Compostela năm 1986 là bước ngoặt đưa ông đến với sự nghiệp văn chương.
+            </p>
+            <p>
+              Văn phong của Coelho giản dị, giàu tính biểu tượng và chiêm nghiệm, thường xoay quanh hành trình tìm
+              kiếm bản thân, niềm tin và ý nghĩa cuộc sống. <em>Nhà Giả Kim</em> (<em>O Alquimista</em>, 1988) trở thành
+              tác phẩm nổi tiếng nhất của ông, được dịch ra rất nhiều ngôn ngữ và truyền cảm hứng cho nhiều thế hệ độc giả.
+            </p>
+            <p>
+              Các tác phẩm tiêu biểu khác: <em>Hành hương</em>, <em>Bên dòng sông Piedra tôi ngồi khóc</em>,
+              <em>Veronika quyết chết</em>, <em>Mười một phút</em>.
+            </p>
+          </div>
+
+          <ul class="reveal mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3" style="--delay:.24s">
+            <li class="fact-chip"><strong>1947</strong><span>Sinh tại Rio de Janeiro, Brazil</span></li>
+            <li class="fact-chip"><strong>1988</strong><span>Xuất bản <em>O Alquimista</em></span></li>
+            <li class="fact-chip"><strong>2002</strong><span>Thành viên Viện Hàn lâm Văn chương Brazil</span></li>
+          </ul>
+
+          <blockquote class="quote-block reveal mt-8" style="--delay:.3s">
+            “Khi bạn khao khát một điều gì, cả vũ trụ sẽ hợp lực giúp bạn đạt được điều đó.”
+            <footer class="mt-2 text-sm font-normal text-ink/70">— Trích <cite class="not-italic">Nhà Giả Kim</cite></footer>
+          </blockquote>
+
+          <div class="reveal mt-10" style="--delay:.36s">
+            <button type="button" data-open-order class="btn btn-royal">
+              Sở hữu Nhà Giả Kim <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRUYỀN THÔNG & VIDEO ===================== -->
+    <section id="truyen-thong" class="section media-section relative overflow-hidden text-ivory" aria-labelledby="media-title">
+      <svg class="hero-deco -right-10 top-10 hidden w-72 opacity-40 lg:block" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+        <circle cx="100" cy="100" r="44" stroke="currentColor" stroke-width="1"/>
+        <circle cx="100" cy="100" r="70" stroke="currentColor" stroke-opacity=".5" stroke-width="1" stroke-dasharray="2 6"/>
+        <g stroke="currentColor" stroke-width="1" stroke-linecap="round">
+          <line x1="100" y1="20" x2="100" y2="44"/><line x1="100" y1="156" x2="100" y2="180"/>
+          <line x1="20" y1="100" x2="44" y2="100"/><line x1="156" y1="100" x2="180" y2="100"/>
+          <line x1="43" y1="43" x2="60" y2="60"/><line x1="140" y1="140" x2="157" y2="157"/>
+          <line x1="157" y1="43" x2="140" y2="60"/><line x1="60" y1="140" x2="43" y2="157"/>
+        </g>
+      </svg>
+
+      <div class="container-site relative">
+        <header class="mx-auto max-w-3xl text-center">
+          <p class="eyebrow eyebrow--center reveal">Truyền thông &amp; Video</p>
+          <h2 id="media-title" class="section-title reveal mt-3 text-champagne" data-media-title style="--delay:.08s">
+            Nhà Giả Kim qua góc nhìn truyền thông
+          </h2>
+          <p class="section-lead reveal mx-auto mt-4 text-ivory/75" style="--delay:.16s">
+            Những bài viết, video và góc nhìn về cuốn sách đã đồng hành cùng hàng triệu độc giả trên khắp thế giới.
+          </p>
+        </header>
+
+        <article class="reveal mx-auto mt-10 max-w-4xl" aria-labelledby="featured-video-title">
+          <div id="featured-video" class="video-frame"></div>
+          <div class="mt-5 flex flex-col gap-1 text-center sm:flex-row sm:items-baseline sm:justify-between sm:text-left">
+            <h3 id="featured-video-title" class="text-lg font-semibold text-ivory md:text-xl"></h3>
+            <p id="featured-video-source" class="text-sm text-champagne/80"></p>
+          </div>
+        </article>
+
+        <div class="mt-12 text-center">
+          <button type="button" data-open-order class="btn btn-primary">
+            Khám phá cuốn sách ngay <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ĐỌC THỬ ===================== -->
+    <section id="doc-thu" class="section bg-sand" aria-labelledby="preview-title">
+      <div class="container-site">
+        <header class="mx-auto max-w-3xl text-center">
+          <p class="eyebrow eyebrow--light eyebrow--center reveal">Đọc thử</p>
+          <h2 id="preview-title" class="section-title reveal mt-3 text-royal" style="--delay:.08s">
+            Lật giở những trang đầu tiên
+          </h2>
+          <p class="section-lead reveal mx-auto mt-4 text-ink/80" style="--delay:.16s">
+            Kéo góc trang, vuốt, dùng phím mũi tên hoặc nút điều hướng để lật sách. Nhấn <i class="fa-solid fa-up-right-and-down-left-from-center text-sm" aria-hidden="true"></i><span class="sr-only">nút toàn màn hình</span> để đọc rõ hơn.
+          </p>
+        </header>
+
+        <div id="preview" class="preview reveal mt-10" role="region" aria-roledescription="trình xem trang"
+             aria-label="Đọc thử Nhà Giả Kim" tabindex="0">
+          <div class="preview-book">
+            <div id="flipbook" class="flipbook"></div>
+          </div>
+
+          <div class="preview-controls mt-6 flex items-center justify-center gap-3 sm:gap-4">
+            <button type="button" class="icon-btn icon-btn--light" data-preview-prev aria-label="Trang trước">
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <p class="min-w-[120px] text-center text-sm font-medium text-royal" data-preview-indicator aria-live="polite">1 / 1</p>
+            <button type="button" class="icon-btn icon-btn--light" data-preview-next aria-label="Trang sau">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="icon-btn icon-btn--light ml-1" data-preview-zoom aria-label="Xem toàn màn hình" title="Toàn màn hình">
+              <i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-10 text-center">
+          <button type="button" data-open-order class="btn btn-primary">
+            Mua sách để đọc trọn vẹn <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ĐÁNH GIÁ ===================== -->
+    <section id="danh-gia" class="section bg-ivory" aria-labelledby="reviews-title">
+      <div class="container-site">
+        <header class="mx-auto max-w-3xl text-center">
+          <p class="eyebrow eyebrow--light eyebrow--center reveal">Đánh giá</p>
+          <h2 id="reviews-title" class="section-title reveal mt-3 text-royal" style="--delay:.08s">
+            Độc giả nói gì về Nhà Giả Kim?
+          </h2>
+        </header>
+
+        <div id="rating-summary" class="card reveal mt-10 p-6 md:p-8"></div>
+
+        <div class="reveal mt-12 md:mt-14">
+          <div id="review-list" class="review-slider" aria-label="Danh sách đánh giá"></div>
+          <div class="review-controls">
+            <button type="button" class="icon-btn icon-btn--light" data-review-prev aria-label="Đánh giá trước">
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="review-dots" data-review-dots></div>
+            <button type="button" class="icon-btn icon-btn--light" data-review-next aria-label="Đánh giá tiếp theo">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-12 text-center">
+          <button type="button" data-open-order class="btn btn-royal">
+            Đặt mua ngay hôm nay <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer pb-28 md:pb-0">
+    <div class="container-site grid grid-cols-2 gap-x-8 gap-y-10 py-16 lg:grid-cols-[1.6fr_1fr_1fr] lg:gap-12">
+      <div class="col-span-2 lg:col-span-1">
+        <a href="#gioi-thieu" class="flex items-center gap-3">
+          <img src="images/favicon.svg" width="40" height="40" alt="" loading="lazy">
+          <span class="font-display text-xl font-semibold text-champagne" data-store="name">Nhà sách</span>
+        </a>
+        <p class="mt-4 max-w-sm text-sm leading-relaxed" data-store="about"></p>
+        <ul class="mt-5 space-y-1 text-sm" id="footer-contact" aria-label="Thông tin liên hệ"></ul>
+        <div class="mt-6 flex gap-3" id="footer-social"></div>
+      </div>
+
+      <div>
+        <h3>Liên kết nhanh</h3>
+        <ul class="text-sm">
+          <li><a class="footer-link" href="#gioi-thieu">Giới thiệu</a></li>
+          <li><a class="footer-link" href="#tac-gia">Tác giả</a></li>
+          <li><a class="footer-link" href="#truyen-thong">Truyền thông</a></li>
+          <li><a class="footer-link" href="#doc-thu">Đọc thử</a></li>
+          <li><a class="footer-link" href="#danh-gia">Đánh giá</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Chính sách</h3>
+        <!-- TODO: trỏ tới trang chính sách thật -->
+        <ul class="text-sm">
+          <li><a class="footer-link" href="#">Chính sách giao hàng</a></li>
+          <li><a class="footer-link" href="#">Chính sách đổi trả</a></li>
+          <li><a class="footer-link" href="#">Chính sách bảo mật</a></li>
+          <li><a class="footer-link" href="#">Hướng dẫn thanh toán</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-ivory/10">
+      <div class="container-site flex flex-col items-center justify-between gap-2 py-6 text-center text-xs text-ivory/60 sm:flex-row sm:text-left">
+        <p>© <span data-year></span> <span data-store="name"></span>. Bảo lưu mọi quyền.</p>
+        <p>Nhà Giả Kim – Paulo Coelho. Hình ảnh bìa và trang đọc thử thuộc quyền của chủ sở hữu.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== STICKY CTA (MOBILE) ===================== -->
+  <div id="sticky-cta" class="sticky-cta md:hidden" aria-hidden="true" inert>
+    <div class="flex items-center justify-between gap-3">
+      <div class="leading-tight">
+        <p class="font-display text-base text-champagne">Nhà Giả Kim</p>
+        <p class="text-sm text-ivory/80" data-price>—</p>
+      </div>
+      <button type="button" data-open-order class="btn btn-primary btn-sm px-6">
+        Mua ngay <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== ORDER MODAL (một instance duy nhất) ===================== -->
+  <dialog id="order-dialog" class="order-dialog" aria-labelledby="order-title">
+    <div class="order-panel">
+      <div class="order-head">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="eyebrow eyebrow--light">Đặt hàng nhanh</p>
+            <h2 id="order-title" class="mt-1 font-display text-2xl font-semibold text-royal">Đặt mua Nhà Giả Kim</h2>
+          </div>
+          <button type="button" class="icon-btn icon-btn--light shrink-0" data-close-order aria-label="Đóng form đặt hàng">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="mt-4 flex items-center gap-4">
+          <img src="images/sach-nha-gia-kim.png" width="56" height="82" alt="" class="h-[82px] w-14 rounded-sm object-cover shadow-md">
+          <div class="min-w-0">
+            <p class="font-semibold leading-snug">Nhà Giả Kim – Paulo Coelho</p>
+            <p class="text-sm text-ink/70" data-product-edition></p>
+            <p class="mt-1 font-semibold text-royal"><span data-price>—</span> <span class="text-sm font-normal text-ink/60">/ cuốn</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form id="order-form" class="flex min-h-0 flex-1 flex-col" novalidate>
+        <div class="order-scroll">
+          <fieldset class="form-fieldset">
+            <legend class="form-legend"><i class="fa-solid fa-user" aria-hidden="true"></i> Thông tin người nhận</legend>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="form-label" for="f-fullName">Họ và tên <span class="req" aria-hidden="true">*</span></label>
+                <input id="f-fullName" name="fullName" type="text" class="form-control" autocomplete="name"
+                       maxlength="100" required aria-describedby="e-fullName" placeholder="Nguyễn Văn A">
+                <p id="e-fullName" class="field-error"></p>
+              </div>
+              <div>
+                <label class="form-label" for="f-phone">Số điện thoại <span class="req" aria-hidden="true">*</span></label>
+                <input id="f-phone" name="phone" type="tel" inputmode="tel" class="form-control" autocomplete="tel"
+                       maxlength="16" required aria-describedby="e-phone" placeholder="09xx xxx xxx">
+                <p id="e-phone" class="field-error"></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend class="form-legend"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Địa chỉ nhận hàng</legend>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="form-label" for="f-province">Tỉnh/Thành phố <span class="req" aria-hidden="true">*</span></label>
+                <select id="f-province" name="province" class="form-control" required aria-describedby="e-province" autocomplete="address-level1">
+                  <option value="">Chọn tỉnh/thành</option>
+                </select>
+                <p id="e-province" class="field-error"></p>
+              </div>
+              <div>
+                <label class="form-label" for="f-ward">Phường/Xã <span class="req" aria-hidden="true">*</span></label>
+                <input id="f-ward" name="ward" type="text" class="form-control" maxlength="100" required
+                       aria-describedby="e-ward" placeholder="VD: Phường Bến Thành" autocomplete="address-level3">
+                <p id="e-ward" class="field-error"></p>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="form-label" for="f-addressLine">Địa chỉ chi tiết <span class="req" aria-hidden="true">*</span></label>
+                <textarea id="f-addressLine" name="addressLine" rows="2" class="form-control" maxlength="200" required
+                          aria-describedby="e-addressLine" placeholder="Số nhà, tên đường, tòa nhà…" autocomplete="street-address"></textarea>
+                <p id="e-addressLine" class="field-error"></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend class="form-legend"><i class="fa-solid fa-book" aria-hidden="true"></i> Số lượng</legend>
+            <div class="flex flex-wrap items-center gap-4">
+              <div class="qty-stepper">
+                <button type="button" data-qty="-1" aria-label="Giảm số lượng"><i class="fa-solid fa-minus" aria-hidden="true"></i></button>
+                <input id="f-quantity" name="quantity" type="number" inputmode="numeric" min="1" value="1"
+                       aria-label="Số lượng" aria-describedby="e-quantity">
+                <button type="button" data-qty="1" aria-label="Tăng số lượng"><i class="fa-solid fa-plus" aria-hidden="true"></i></button>
+              </div>
+              <p class="text-sm text-ink/70">Tối đa <span data-max-qty></span> cuốn/đơn</p>
+            </div>
+            <p id="e-quantity" class="field-error"></p>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend class="form-legend"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Phương thức thanh toán</legend>
+            <div class="grid gap-3">
+              <label class="pay-option">
+                <input type="radio" name="paymentMethod" value="cod" checked>
+                <span class="pay-box">
+                  <span class="pay-dot" aria-hidden="true"></span>
+                  <span>
+                    <span class="block font-semibold">Thanh toán khi nhận hàng (COD)</span>
+                    <span class="block text-sm text-ink/70">Kiểm tra sách rồi thanh toán cho nhân viên giao hàng.</span>
+                  </span>
+                  <i class="fa-solid fa-truck-fast ml-auto mt-1 text-antique-gold" aria-hidden="true"></i>
+                </span>
+              </label>
+              <label class="pay-option">
+                <input type="radio" name="paymentMethod" value="bank_transfer">
+                <span class="pay-box">
+                  <span class="pay-dot" aria-hidden="true"></span>
+                  <span>
+                    <span class="block font-semibold">Chuyển khoản ngân hàng</span>
+                    <span class="block text-sm text-ink/70">Thông tin chuyển khoản/QR hiển thị sau khi đơn được tạo.</span>
+                  </span>
+                  <i class="fa-solid fa-building-columns ml-auto mt-1 text-antique-gold" aria-hidden="true"></i>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="form-fieldset">
+            <label class="form-label" for="f-note">Ghi chú <span class="font-normal text-ink/60">(không bắt buộc)</span></label>
+            <textarea id="f-note" name="note" rows="2" class="form-control" maxlength="300"
+                      aria-describedby="h-note" placeholder="VD: giao giờ hành chính, gói quà…"></textarea>
+            <p id="h-note" class="field-hint">Tối đa 300 ký tự.</p>
+          </div>
+
+          <div class="order-summary" aria-live="polite">
+            <div><span>Đơn giá</span><span data-sum="unit">—</span></div>
+            <div><span>Số lượng</span><span data-sum="qty">1</span></div>
+            <div><span>Tạm tính</span><span data-sum="subtotal">—</span></div>
+            <div><span>Phí giao hàng</span><span data-sum="shipping">Chọn tỉnh/thành để tính</span></div>
+            <div class="total"><span>Tổng thanh toán</span><span data-sum="total">—</span></div>
+          </div>
+          <p class="mt-3 flex gap-2 text-xs leading-relaxed text-ink/70">
+            <i class="fa-solid fa-shield-halved mt-0.5 text-bronze" aria-hidden="true"></i>
+            <span data-shipping-policy></span>
+          </p>
+
+          <div id="order-status" class="form-status mt-4" role="alert"></div>
+        </div>
+
+        <div class="order-footer">
+          <button type="submit" class="btn btn-primary w-full" data-submit>
+            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+            <span data-submit-label>Xác nhận đặt hàng</span>
+          </button>
+          <p class="mt-2 text-center text-xs text-ink/60">Thông tin của bạn chỉ dùng để giao hàng.</p>
+        </div>
+      </form>
+
+      <!-- Kết quả (chỉ hiện khi backend xác nhận đã tạo đơn) -->
+      <div id="order-result" class="order-scroll" hidden tabindex="-1"></div>
+    </div>
+  </dialog>
+
+</body>
+</html>

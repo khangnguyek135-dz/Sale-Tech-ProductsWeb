@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Quản trị | Nhà Giả Kim</title>
+  <meta name="description" content="Trang quản trị Nhà Giả Kim – quản lý đơn hàng, nội dung và cài đặt.">
+  <meta name="theme-color" content="#21123D">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" href="images/admin/admin-logo.svg" type="image/svg+xml">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <!-- CSS riêng của trang quản trị (không dùng chung với landing page / login) -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <!-- Áp trạng thái menu thu gọn trước khi vẽ trang để tránh nháy giao diện -->
+  <script>
+    try { if (localStorage.getItem('ngk-admin-sidebar') === 'collapsed') document.documentElement.classList.add('sidebar-collapsed'); } catch (e) {}
+  </script>
+  <script src="js/admin.js" defer></script>
+</head>
+
+<!-- LƯU Ý: trang này chỉ là giao diện. Việc chặn truy cập khi chưa đăng nhập
+     phải do backend đảm nhận (kiểm tra phiên ở server trước khi trả trang / dữ liệu). -->
+<body class="admin-body">
+  <a href="#admin-content" class="skip-link">Bỏ qua đến nội dung chính</a>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside id="sidebar" class="sidebar" aria-label="Menu quản trị">
+    <div class="sidebar-head">
+      <a href="#/dashboard" class="sidebar-brand" aria-label="Nhà Giả Kim – Dashboard">
+        <img src="images/admin/admin-logo.svg" width="38" height="38" alt="">
+        <span class="sidebar-brand__text">
+          <span class="sidebar-brand__name">Nhà Giả Kim</span>
+          <span class="sidebar-brand__sub">Quản trị</span>
+        </span>
+      </a>
+      <button type="button" class="sidebar-collapse" data-sidebar-collapse aria-controls="sidebar"
+              aria-expanded="true" aria-label="Thu gọn menu" title="Thu gọn menu">
+        <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Điều hướng quản trị">
+      <!-- Menu tối đa 2 cấp: .nav-item > .nav-link (cấp 1) > .subnav > .subnav-link (cấp 2) -->
+      <p class="nav-section">Tổng quan</p>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a class="nav-link" href="#/dashboard" data-route="dashboard">
+            <i class="nav-icon fa-solid fa-gauge-high" aria-hidden="true"></i>
+            <span class="nav-label">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item has-sub">
+          <button type="button" class="nav-link" data-sub-toggle aria-expanded="false" aria-controls="sub-orders">
+            <i class="nav-icon fa-solid fa-receipt" aria-hidden="true"></i>
+            <span class="nav-label">Đơn đặt hàng</span>
+            <span class="nav-badge" data-pending-count></span>
+            <i class="nav-caret fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <ul id="sub-orders" class="subnav">
+            <li class="subnav-title" aria-hidden="true">Đơn đặt hàng</li>
+            <li><a class="subnav-link" href="#/orders" data-route="orders">Tất cả đơn hàng</a></li>
+            <li><a class="subnav-link" href="#/orders/pending" data-route="orders/pending">Chờ xác nhận</a></li>
+            <li><a class="subnav-link" href="#/orders/shipping" data-route="orders/shipping">Đang giao</a></li>
+            <li><a class="subnav-link" href="#/orders/completed" data-route="orders/completed">Hoàn tất</a></li>
+            <li><a class="subnav-link" href="#/orders/cancelled" data-route="orders/cancelled">Đã hủy</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#/customers" data-route="customers">
+            <i class="nav-icon fa-solid fa-users" aria-hidden="true"></i>
+            <span class="nav-label">Khách hàng</span>
+          </a>
+        </li>
+      </ul>
+
+      <p class="nav-section">Nội dung</p>
+      <ul class="nav-list">
+        <li class="nav-item has-sub">
+          <button type="button" class="nav-link" data-sub-toggle aria-expanded="false" aria-controls="sub-product">
+            <i class="nav-icon fa-solid fa-book" aria-hidden="true"></i>
+            <span class="nav-label">Sản phẩm</span>
+            <i class="nav-caret fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <ul id="sub-product" class="subnav">
+            <li class="subnav-title" aria-hidden="true">Sản phẩm</li>
+            <li><a class="subnav-link" href="#/product/info" data-route="product/info">Thông tin sách</a></li>
+            <li><a class="subnav-link" href="#/product/stock" data-route="product/stock">Giá &amp; tồn kho</a></li>
+          </ul>
+        </li>
+        <li class="nav-item has-sub">
+          <button type="button" class="nav-link" data-sub-toggle aria-expanded="false" aria-controls="sub-content">
+            <i class="nav-icon fa-solid fa-layer-group" aria-hidden="true"></i>
+            <span class="nav-label">Nội dung trang</span>
+            <i class="nav-caret fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <ul id="sub-content" class="subnav">
+            <li class="subnav-title" aria-hidden="true">Nội dung trang</li>
+            <li><a class="subnav-link" href="#/content/media" data-route="content/media">Truyền thông &amp; video</a></li>
+            <li><a class="subnav-link" href="#/content/preview" data-route="content/preview">Trang đọc thử</a></li>
+            <li><a class="subnav-link" href="#/content/reviews" data-route="content/reviews">Đánh giá</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <p class="nav-section">Hệ thống</p>
+      <ul class="nav-list">
+        <li class="nav-item has-sub">
+          <button type="button" class="nav-link" data-sub-toggle aria-expanded="false" aria-controls="sub-settings">
+            <i class="nav-icon fa-solid fa-gear" aria-hidden="true"></i>
+            <span class="nav-label">Cài đặt</span>
+            <i class="nav-caret fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <ul id="sub-settings" class="subnav">
+            <li class="subnav-title" aria-hidden="true">Cài đặt</li>
+            <li><a class="subnav-link" href="#/settings/store" data-route="settings/store">Thông tin nhà sách</a></li>
+            <li><a class="subnav-link" href="#/settings/shipping" data-route="settings/shipping">Phí giao hàng</a></li>
+            <li><a class="subnav-link" href="#/settings/payment" data-route="settings/payment">Thanh toán</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="nav-link" href="index.html" target="_blank" rel="noopener">
+        <i class="nav-icon fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        <span class="nav-label">Xem trang bán hàng</span>
+      </a>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" data-sidebar-close hidden></div>
+
+  <!-- ===================== KHU VỰC CHÍNH ===================== -->
+  <div class="admin-main">
+
+    <!-- Thanh menu ngang -->
+    <header class="topbar">
+      <button type="button" class="icon-btn topbar-menu" data-sidebar-open aria-controls="sidebar"
+              aria-expanded="false" aria-label="Mở menu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+
+      <div class="topbar-title">
+        <nav aria-label="Breadcrumb">
+          <ol class="breadcrumb" data-breadcrumb></ol>
+        </nav>
+        <p class="topbar-heading" data-page-heading>Dashboard</p>
+      </div>
+
+      <div class="topbar-actions">
+        <a href="index.html" target="_blank" rel="noopener" class="icon-btn topbar-hide-sm"
+           aria-label="Xem trang bán hàng" title="Xem trang bán hàng">
+          <i class="fa-solid fa-store" aria-hidden="true"></i>
+        </a>
+
+        <div class="profile">
+          <button type="button" class="profile-btn" data-profile-toggle aria-haspopup="menu"
+                  aria-expanded="false" aria-controls="profile-menu">
+            <img src="images/admin/avatar-default.svg" width="40" height="40" alt="" data-user-avatar>
+            <span class="profile-btn__text">
+              <span class="profile-btn__name" data-user-name>—</span>
+              <span class="profile-btn__role" data-user-role></span>
+            </span>
+            <i class="fa-solid fa-chevron-down profile-btn__caret" aria-hidden="true"></i>
+          </button>
+
+          <div id="profile-menu" class="profile-menu" role="menu" aria-label="Tài khoản" hidden>
+            <div class="profile-menu__head">
+              <img src="images/admin/avatar-default.svg" width="44" height="44" alt="" data-user-avatar>
+              <div class="min-w-0">
+                <p class="profile-menu__name" data-user-name>—</p>
+                <p class="profile-menu__email" data-user-email></p>
+              </div>
+            </div>
+            <a role="menuitem" href="#/profile" class="profile-menu__item">
+              <i class="fa-regular fa-id-badge" aria-hidden="true"></i> Chỉnh sửa hồ sơ
+            </a>
+            <a role="menuitem" href="#/profile/password" class="profile-menu__item">
+              <i class="fa-solid fa-key" aria-hidden="true"></i> Đổi mật khẩu
+            </a>
+            <a role="menuitem" href="#/settings/store" class="profile-menu__item">
+              <i class="fa-solid fa-gear" aria-hidden="true"></i> Cài đặt
+            </a>
+            <hr class="profile-menu__sep">
+            <button type="button" role="menuitem" class="profile-menu__item profile-menu__item--danger" data-logout>
+              <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Đăng xuất
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Nội dung chính của từng page -->
+    <main id="admin-content" class="content" tabindex="-1">
+
+      <div class="demo-notice" data-demo-notice>
+        <i class="fa-solid fa-flask" aria-hidden="true"></i>
+        <span><strong>Dữ liệu mẫu.</strong> Số liệu, đơn hàng và tài khoản trên trang này chỉ để minh họa giao diện –
+          thay bằng dữ liệu từ API trước khi sử dụng thật (xem <code>CONFIG</code> trong <code>js/admin.js</code>).</span>
+      </div>
+
+      <!-- ========== DASHBOARD ========== -->
+      <section class="page" data-page="dashboard" aria-labelledby="h-dashboard" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="h-dashboard" class="page-title">Dashboard</h1>
+            <p class="page-lead">Tổng quan tình hình bán sách Nhà Giả Kim.</p>
+          </div>
+          <a href="#/orders/pending" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-clock" aria-hidden="true"></i> Xử lý đơn chờ
+          </a>
+        </div>
+
+        <ul class="stat-grid" data-stats aria-label="Chỉ số chính"></ul>
+
+        <div class="dash-grid">
+          <article class="card">
+            <header class="card-head">
+              <div>
+                <h2 class="card-title">Đơn hàng 7 ngày qua</h2>
+                <p class="card-sub">Số đơn được tạo mỗi ngày</p>
+              </div>
+            </header>
+            <div class="bar-chart" data-chart role="group" aria-label="Biểu đồ cột: số đơn hàng 7 ngày qua"></div>
+            <details class="chart-table">
+              <summary>Xem dạng bảng</summary>
+              <table class="table table--compact">
+                <caption class="sr-only">Số đơn hàng theo ngày trong 7 ngày qua</caption>
+                <thead><tr><th scope="col">Ngày</th><th scope="col" class="num">Số đơn</th></tr></thead>
+                <tbody data-chart-table></tbody>
+              </table>
+            </details>
+          </article>
+
+          <article class="card">
+            <header class="card-head">
+              <div>
+                <h2 class="card-title">Trạng thái đơn hàng</h2>
+                <p class="card-sub">Toàn bộ đơn hiện có</p>
+              </div>
+            </header>
+            <ul class="status-list" data-status-list></ul>
+          </article>
+        </div>
+
+        <article class="card">
+          <header class="card-head">
+            <div>
+              <h2 class="card-title">Đơn hàng gần đây</h2>
+              <p class="card-sub">5 đơn mới nhất</p>
+            </div>
+            <a href="#/orders" class="text-link text-link--sm">Xem tất cả <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </header>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Mã đơn</th>
+                  <th scope="col">Khách hàng</th>
+                  <th scope="col" class="num">Tổng tiền</th>
+                  <th scope="col">Trạng thái</th>
+                  <th scope="col">Ngày tạo</th>
+                </tr>
+              </thead>
+              <tbody data-recent-orders></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <!-- ========== ĐƠN ĐẶT HÀNG ========== -->
+      <section class="page" data-page="orders" aria-labelledby="h-orders" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="h-orders" class="page-title">Đơn đặt hàng</h1>
+            <p class="page-lead">Theo dõi và xử lý đơn hàng của khách.</p>
+          </div>
+        </div>
+
+        <article class="card">
+          <div class="toolbar">
+            <nav class="tabs" aria-label="Lọc theo trạng thái" data-order-tabs></nav>
+            <label class="search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <span class="sr-only">Tìm đơn hàng</span>
+              <input type="search" class="form-control" placeholder="Mã đơn, tên, SĐT…" data-order-search>
+            </label>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Mã đơn</th>
+                  <th scope="col">Khách hàng</th>
+                  <th scope="col">Tỉnh/Thành</th>
+                  <th scope="col" class="num">SL</th>
+                  <th scope="col" class="num">Tổng tiền</th>
+                  <th scope="col">Thanh toán</th>
+                  <th scope="col">Trạng thái</th>
+                  <th scope="col">Ngày tạo</th>
+                </tr>
+              </thead>
+              <tbody data-order-rows></tbody>
+            </table>
+          </div>
+          <div class="empty-state" data-order-empty hidden>
+            <img src="images/admin/empty-state.svg" width="200" height="140" alt="">
+            <p class="empty-state__title">Không có đơn hàng phù hợp</p>
+            <p class="empty-state__text">Thử đổi bộ lọc trạng thái hoặc từ khóa tìm kiếm.</p>
+          </div>
+          <p class="table-foot" data-order-count aria-live="polite"></p>
+        </article>
+      </section>
+
+      <!-- ========== CÀI ĐẶT ========== -->
+      <section class="page" data-page="settings" aria-labelledby="h-settings" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="h-settings" class="page-title">Cài đặt</h1>
+            <p class="page-lead">Thông tin hiển thị trên trang bán hàng và quy định đơn hàng.</p>
+          </div>
+        </div>
+
+        <nav class="tabs tabs--links" aria-label="Mục cài đặt">
+          <a class="tab" href="#/settings/store" data-route="settings/store">Thông tin nhà sách</a>
+          <a class="tab" href="#/settings/shipping" data-route="settings/shipping">Phí giao hàng</a>
+          <a class="tab" href="#/settings/payment" data-route="settings/payment">Thanh toán</a>
+        </nav>
+
+        <form class="card form-card" data-panel="settings/store" data-admin-form novalidate hidden>
+          <h2 class="card-title">Thông tin nhà sách</h2>
+          <p class="card-sub">Hiển thị ở footer trang bán hàng.</p>
+          <div class="form-grid">
+            <div>
+              <label class="form-label" for="s-name">Tên nhà sách <span class="req" aria-hidden="true">*</span></label>
+              <input id="s-name" name="name" class="form-control" required maxlength="100">
+            </div>
+            <div>
+              <label class="form-label" for="s-phone">Số điện thoại <span class="req" aria-hidden="true">*</span></label>
+              <input id="s-phone" name="phone" type="tel" class="form-control" required maxlength="16">
+            </div>
+            <div>
+              <label class="form-label" for="s-email">Email</label>
+              <input id="s-email" name="email" type="email" class="form-control" maxlength="100">
+            </div>
+            <div>
+              <label class="form-label" for="s-hours">Giờ hoạt động</label>
+              <input id="s-hours" name="hours" class="form-control" maxlength="100" placeholder="VD: 8:00 – 21:00, T2–CN">
+            </div>
+            <div class="span-2">
+              <label class="form-label" for="s-address">Địa chỉ</label>
+              <input id="s-address" name="address" class="form-control" maxlength="200">
+            </div>
+            <div class="span-2">
+              <label class="form-label" for="s-about">Giới thiệu ngắn</label>
+              <textarea id="s-about" name="about" rows="3" class="form-control" maxlength="300"></textarea>
+            </div>
+          </div>
+          <div class="form-status" role="alert" data-form-status></div>
+          <div class="form-actions">
+            <button type="reset" class="btn btn-ghost">Hoàn tác</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Lưu thay đổi</button>
+          </div>
+        </form>
+
+        <form class="card form-card" data-panel="settings/shipping" data-admin-form novalidate hidden>
+          <h2 class="card-title">Phí giao hàng</h2>
+          <p class="card-sub">Áp dụng khi khách chọn tỉnh/thành trong form đặt hàng.</p>
+          <div class="form-grid">
+            <div>
+              <label class="form-label" for="sh-inner">Nội thành (đ)</label>
+              <input id="sh-inner" name="inner" type="number" min="0" step="1000" class="form-control">
+            </div>
+            <div>
+              <label class="form-label" for="sh-outer">Tỉnh khác (đ)</label>
+              <input id="sh-outer" name="outer" type="number" min="0" step="1000" class="form-control">
+            </div>
+            <div>
+              <label class="form-label" for="sh-free">Miễn phí từ (đ)</label>
+              <input id="sh-free" name="freeFrom" type="number" min="0" step="1000" class="form-control">
+              <p class="field-hint">Để trống nếu không áp dụng.</p>
+            </div>
+            <div>
+              <label class="form-label" for="sh-max">Số lượng tối đa / đơn</label>
+              <input id="sh-max" name="maxQty" type="number" min="1" class="form-control">
+            </div>
+          </div>
+          <div class="form-status" role="alert" data-form-status></div>
+          <div class="form-actions">
+            <button type="reset" class="btn btn-ghost">Hoàn tác</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Lưu thay đổi</button>
+          </div>
+        </form>
+
+        <form class="card form-card" data-panel="settings/payment" data-admin-form novalidate hidden>
+          <h2 class="card-title">Thanh toán</h2>
+          <p class="card-sub">Phương thức khách được chọn khi đặt hàng.</p>
+          <div class="switch-list">
+            <label class="switch">
+              <input type="checkbox" name="cod" checked>
+              <span class="switch__track" aria-hidden="true"></span>
+              <span>
+                <span class="switch__title">Thanh toán khi nhận hàng (COD)</span>
+                <span class="switch__desc">Khách kiểm tra sách rồi thanh toán cho nhân viên giao hàng.</span>
+              </span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" name="bankTransfer" checked>
+              <span class="switch__track" aria-hidden="true"></span>
+              <span>
+                <span class="switch__title">Chuyển khoản ngân hàng</span>
+                <span class="switch__desc">Hiển thị thông tin chuyển khoản/QR sau khi đơn được tạo.</span>
+              </span>
+            </label>
+          </div>
+          <div class="form-grid mt-24">
+            <div>
+              <label class="form-label" for="p-bank">Ngân hàng</label>
+              <input id="p-bank" name="bankName" class="form-control" maxlength="100">
+            </div>
+            <div>
+              <label class="form-label" for="p-account">Số tài khoản</label>
+              <input id="p-account" name="accountNumber" class="form-control" inputmode="numeric" maxlength="30">
+            </div>
+            <div class="span-2">
+              <label class="form-label" for="p-holder">Chủ tài khoản</label>
+              <input id="p-holder" name="accountHolder" class="form-control" maxlength="100">
+            </div>
+          </div>
+          <div class="form-status" role="alert" data-form-status></div>
+          <div class="form-actions">
+            <button type="reset" class="btn btn-ghost">Hoàn tác</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Lưu thay đổi</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ========== HỒ SƠ CÁ NHÂN ========== -->
+      <section class="page" data-page="profile" aria-labelledby="h-profile" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="h-profile" class="page-title">Hồ sơ cá nhân</h1>
+            <p class="page-lead">Thông tin tài khoản quản trị của bạn.</p>
+          </div>
+        </div>
+
+        <nav class="tabs tabs--links" aria-label="Mục hồ sơ">
+          <a class="tab" href="#/profile" data-route="profile">Thông tin</a>
+          <a class="tab" href="#/profile/password" data-route="profile/password">Đổi mật khẩu</a>
+        </nav>
+
+        <form class="card form-card" data-panel="profile" data-admin-form novalidate hidden>
+          <div class="avatar-edit">
+            <img src="images/admin/avatar-default.svg" width="88" height="88" alt="Ảnh đại diện" data-user-avatar data-avatar-preview>
+            <div>
+              <p class="font-semibold">Ảnh đại diện</p>
+              <p class="field-hint">PNG, JPG hoặc WebP, tối đa 2MB.</p>
+              <label class="btn btn-ghost btn-sm mt-8">
+                <i class="fa-solid fa-upload" aria-hidden="true"></i> Chọn ảnh
+                <input type="file" name="avatar" accept="image/png,image/jpeg,image/webp" class="sr-only" data-avatar-input>
+              </label>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label class="form-label" for="u-name">Họ và tên <span class="req" aria-hidden="true">*</span></label>
+              <input id="u-name" name="fullName" class="form-control" required maxlength="100" autocomplete="name">
+            </div>
+            <div>
+              <label class="form-label" for="u-email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="u-email" name="email" type="email" class="form-control" required maxlength="100" autocomplete="email">
+            </div>
+            <div>
+              <label class="form-label" for="u-phone">Số điện thoại</label>
+              <input id="u-phone" name="phone" type="tel" class="form-control" maxlength="16" autocomplete="tel">
+            </div>
+            <div>
+              <label class="form-label" for="u-role">Vai trò</label>
+              <input id="u-role" name="role" class="form-control" readonly aria-readonly="true">
+            </div>
+          </div>
+          <div class="form-status" role="alert" data-form-status></div>
+          <div class="form-actions">
+            <button type="reset" class="btn btn-ghost">Hoàn tác</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Lưu hồ sơ</button>
+          </div>
+        </form>
+
+        <form class="card form-card form-card--narrow" data-panel="profile/password" data-admin-form data-password-form novalidate hidden>
+          <h2 class="card-title">Đổi mật khẩu</h2>
+          <p class="card-sub">Mật khẩu mới tối thiểu 8 ký tự.</p>
+          <div class="form-stack">
+            <div>
+              <label class="form-label" for="pw-current">Mật khẩu hiện tại <span class="req" aria-hidden="true">*</span></label>
+              <input id="pw-current" name="currentPassword" type="password" class="form-control" required autocomplete="current-password">
+            </div>
+            <div>
+              <label class="form-label" for="pw-new">Mật khẩu mới <span class="req" aria-hidden="true">*</span></label>
+              <input id="pw-new" name="newPassword" type="password" class="form-control" required minlength="8" autocomplete="new-password">
+            </div>
+            <div>
+              <label class="form-label" for="pw-confirm">Nhập lại mật khẩu mới <span class="req" aria-hidden="true">*</span></label>
+              <input id="pw-confirm" name="confirmPassword" type="password" class="form-control" required autocomplete="new-password">
+            </div>
+          </div>
+          <div class="form-status" role="alert" data-form-status></div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-key" aria-hidden="true"></i> Cập nhật mật khẩu</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ========== TRANG CHƯA TRIỂN KHAI ========== -->
+      <section class="page" data-page="placeholder" aria-labelledby="h-placeholder" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="h-placeholder" class="page-title" data-placeholder-title></h1>
+          </div>
+        </div>
+        <article class="card empty-state empty-state--card">
+          <img src="images/admin/empty-state.svg" width="200" height="140" alt="">
+          <p class="empty-state__title">Trang đang được xây dựng</p>
+          <p class="empty-state__text">Chức năng này sẽ có khi kết nối với backend.</p>
+          <a href="#/dashboard" class="btn btn-ghost btn-sm mt-16">Về Dashboard</a>
+        </article>
+      </section>
+
+      <!-- ========== 404 ========== -->
+      <section class="page" data-page="not-found" aria-labelledby="h-404" hidden>
+        <article class="card empty-state empty-state--card">
+          <img src="images/admin/empty-state.svg" width="200" height="140" alt="">
+          <h1 id="h-404" class="empty-state__title">Không tìm thấy trang</h1>
+          <p class="empty-state__text">Đường dẫn không tồn tại hoặc đã bị đổi.</p>
+          <a href="#/dashboard" class="btn btn-primary btn-sm mt-16">Về Dashboard</a>
+        </article>
+      </section>
+    </main>
+
+    <footer class="admin-footer">© <span data-year></span> Nhà Giả Kim · Trang quản trị</footer>
+  </div>
+</body>
+</html>

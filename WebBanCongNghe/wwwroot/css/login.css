@@ -1,0 +1,439 @@
+/* =========================================================
+   NHÀ GIẢ KIM – Trang đăng nhập
+   CSS độc lập, không phụ thuộc style.css / Tailwind của landing page.
+   Token màu & component (button, form-control, eyebrow) giữ đúng
+   design system phương án A trong design.md.
+   ========================================================= */
+
+/* ---------- 1. Design tokens ---------- */
+:root {
+  --ngk-midnight: #21123D;
+  --ngk-royal: #34205E;
+  --ngk-gold: #D8AD61;
+  --ngk-champagne: #F3D9A5;
+  --ngk-ivory: #F7F2E9;
+  --ngk-sand: #EAE0D2;
+  --ngk-terracotta: #C98754;
+  --ngk-ink: #292338;
+  --ngk-bronze: #845A24;
+  --ngk-danger: #B42318;
+
+  --font-body: "Be Vietnam Pro", system-ui, sans-serif;
+
+  --radius-card: 20px;
+  --radius-button: 12px;
+  --shadow-card: 0 16px 40px rgba(33, 18, 61, .10);
+  --ease-out: cubic-bezier(.22, .61, .36, 1);
+}
+
+/* ---------- 2. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ngk-ink);
+  background: var(--ngk-ivory);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, p, blockquote { margin: 0; }
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; max-width: 100%; height: auto; }
+button, input { font: inherit; }
+::selection { background: var(--ngk-champagne); color: var(--ngk-midnight); }
+
+:focus-visible {
+  outline: 2px solid var(--ngk-gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-button);
+  background: var(--ngk-gold);
+  color: var(--ngk-midnight);
+  font-weight: 600;
+  transition: top .2s var(--ease-out);
+}
+.skip-link:focus { top: 12px; }
+
+/* ---------- 3. Layout ---------- */
+.login-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+}
+@media (min-width: 1024px) {
+  .login-shell { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1280px) {
+  .login-shell { grid-template-columns: 1.1fr .9fr; }
+}
+
+/* Panel trang trí – chỉ hiện trên desktop */
+.login-art {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  color: var(--ngk-ivory);
+  background:
+    radial-gradient(60% 55% at 50% 38%, rgba(216, 173, 97, .18) 0%, rgba(216, 173, 97, 0) 60%),
+    linear-gradient(160deg, var(--ngk-midnight) 0%, var(--ngk-royal) 100%);
+}
+@media (min-width: 1024px) { .login-art { display: block; } }
+
+.login-art__inner {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 56px 48px;
+}
+.login-art__img {
+  width: min(100%, 480px);
+  margin: auto auto 0;
+  animation: float 7s ease-in-out infinite;
+}
+.login-art__copy {
+  max-width: 460px;
+  margin: 40px auto 0;
+  text-align: center;
+}
+.login-art .eyebrow::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  opacity: .7;
+}
+.login-quote {
+  margin-top: 16px;
+  font-size: clamp(1.125rem, .9rem + .6vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--ngk-champagne);
+  text-wrap: balance;
+}
+.login-quote__cite {
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(247, 242, 233, .7);
+}
+.login-quote__cite cite { font-style: normal; }
+
+/* Brand */
+.login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--ngk-champagne);
+}
+
+/* Cột form */
+.login-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 20px 32px;
+}
+@media (min-width: 640px) { .login-main { padding-inline: 32px; } }
+@media (min-width: 1024px) { .login-main { padding: 0 48px 32px; } }
+
+/* Thanh trên: dải tím có đồi cát trên mobile, trong suốt trên desktop */
+.login-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-inline: -20px;
+  padding: 20px 20px 64px;
+  color: var(--ngk-ivory);
+  background:
+    url("../images/login/login-dunes.svg") bottom center / 100% 48px no-repeat,
+    linear-gradient(160deg, var(--ngk-midnight) 0%, var(--ngk-royal) 100%);
+}
+@media (min-width: 640px) { .login-topbar { margin-inline: -32px; padding-inline: 32px; } }
+@media (min-width: 1024px) {
+  .login-topbar {
+    margin-inline: 0;
+    padding: 32px 0 0;
+    justify-content: flex-end;
+    color: var(--ngk-royal);
+    background: none;
+  }
+  .login-brand--mobile { display: none; }
+}
+.login-brand--mobile { font-size: 18px; }
+@media (max-width: 379px) { .login-brand--mobile span { display: none; } }
+
+.login-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding-inline: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: .85;
+  transition: opacity .2s var(--ease-out);
+}
+.login-back:hover { opacity: 1; }
+.login-back i { transition: transform .2s var(--ease-out); }
+.login-back:hover i { transform: translateX(-3px); }
+
+/* Card */
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  margin: -32px auto 0;
+  padding: 28px 22px;
+  border-radius: var(--radius-card);
+  background: #fff;
+  border: 1px solid rgba(52, 32, 94, .06);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  animation: fade-up .5s var(--ease-out) both;
+}
+@media (min-width: 640px) { .login-card { padding: 40px 40px 36px; } }
+@media (min-width: 1024px) {
+  .login-card {
+    margin: auto;
+    padding: 8px 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+.login-title {
+  font-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--ngk-royal);
+}
+.login-lead {
+  margin-top: 8px;
+  font-size: 15px;
+  color: rgba(41, 35, 56, .75);
+}
+
+.login-footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(41, 35, 56, .55);
+}
+
+/* ---------- 4. Typography helpers ---------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ngk-gold);
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  opacity: .7;
+}
+@media (min-width: 768px) { .eyebrow { font-size: 13px; } }
+
+.text-link {
+  font-weight: 600;
+  color: var(--ngk-royal);
+  text-decoration: underline;
+  text-decoration-color: rgba(216, 173, 97, .7);
+  text-underline-offset: 3px;
+  transition: color .2s var(--ease-out), text-decoration-color .2s var(--ease-out);
+}
+.text-link:hover { color: var(--ngk-midnight); text-decoration-color: var(--ngk-gold); }
+.text-link--sm { font-size: 13px; font-weight: 500; }
+
+/* ---------- 5. Form ---------- */
+.login-form { margin-top: 28px; display: grid; gap: 20px; }
+
+.label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.label-row .form-label { margin-bottom: 0; }
+
+.form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--ngk-ink); }
+.form-label .req { color: var(--ngk-danger); }
+
+.input-wrap { position: relative; }
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: rgba(52, 32, 94, .45);
+  pointer-events: none;
+  transition: color .2s var(--ease-out);
+}
+.input-wrap:focus-within .input-icon { color: var(--ngk-bronze); }
+
+.form-control {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px 12px 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(52, 32, 94, .2);
+  background: #fff;
+  color: var(--ngk-ink);
+  font-size: 16px; /* >=16px để iOS không tự zoom */
+  line-height: 1.4;
+  transition: border-color .2s var(--ease-out), box-shadow .2s var(--ease-out);
+}
+.form-control--toggle { padding-right: 52px; }
+.form-control::placeholder { color: #8C8499; }
+.form-control:focus { outline: none; border-color: var(--ngk-gold); box-shadow: 0 0 0 4px rgba(216, 173, 97, .22); }
+.form-control[aria-invalid="true"] { border-color: var(--ngk-danger); box-shadow: 0 0 0 3px rgba(180, 35, 24, .12); }
+
+.pw-toggle {
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(52, 32, 94, .6);
+  cursor: pointer;
+  transition: background-color .2s var(--ease-out), color .2s var(--ease-out);
+}
+.pw-toggle:hover { background: rgba(52, 32, 94, .06); color: var(--ngk-royal); }
+
+.field-error { display: none; margin-top: 6px; font-size: 13px; color: var(--ngk-danger); }
+.field-error.is-visible { display: flex; gap: 6px; align-items: center; }
+.field-hint { margin-top: 6px; font-size: 12.5px; color: #6B6178; }
+.field-hint--warn { display: flex; gap: 6px; align-items: center; color: var(--ngk-bronze); }
+.field-hint[hidden] { display: none; }
+
+/* Checkbox */
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.check input { position: absolute; opacity: 0; pointer-events: none; }
+.check__box {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(52, 32, 94, .35);
+  background: #fff;
+  color: var(--ngk-midnight);
+  font-size: 11px;
+  transition: background-color .2s var(--ease-out), border-color .2s var(--ease-out);
+}
+.check__box i { opacity: 0; transform: scale(.6); transition: opacity .15s, transform .2s var(--ease-out); }
+.check input:checked + .check__box { background: var(--ngk-gold); border-color: var(--ngk-gold); }
+.check input:checked + .check__box i { opacity: 1; transform: scale(1); }
+.check input:focus-visible + .check__box { outline: 2px solid var(--ngk-gold); outline-offset: 2px; }
+
+/* Thông báo trạng thái */
+.form-status { display: none; padding: 12px 14px; border-radius: 12px; font-size: 14px; line-height: 1.55; }
+.form-status i { margin-top: 3px; }
+.form-status.is-error { display: flex; gap: 10px; background: #FDECEA; color: #7A1D14; border: 1px solid rgba(180, 35, 24, .25); }
+.form-status.is-info { display: flex; gap: 10px; background: rgba(52, 32, 94, .06); color: var(--ngk-royal); }
+.form-status.is-success { display: flex; gap: 10px; background: #ECF7EF; color: #1F5A33; border: 1px solid rgba(31, 90, 51, .2); }
+
+/* ---------- 6. Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 14px 28px;
+  border-radius: var(--radius-button);
+  border: 1.5px solid transparent;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: transform .2s var(--ease-out), box-shadow .2s var(--ease-out),
+              background-color .2s var(--ease-out), filter .2s var(--ease-out);
+}
+.btn i { transition: transform .2s var(--ease-out); }
+.btn:hover { transform: translateY(-2px); }
+.btn:hover .fa-arrow-right { transform: translateX(3px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: .6; cursor: progress; transform: none; }
+.btn-block { width: 100%; }
+
+.btn-primary {
+  background: linear-gradient(135deg, #E4BE78 0%, var(--ngk-gold) 55%, #C9994B 100%);
+  color: var(--ngk-midnight);
+  box-shadow: 0 10px 24px rgba(216, 173, 97, .28);
+}
+.btn-primary:hover { filter: brightness(1.07); box-shadow: 0 14px 30px rgba(216, 173, 97, .38); }
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(33, 18, 61, .25);
+  border-top-color: var(--ngk-midnight);
+  animation: spin .8s linear infinite;
+}
+
+/* ---------- 7. Animation ---------- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

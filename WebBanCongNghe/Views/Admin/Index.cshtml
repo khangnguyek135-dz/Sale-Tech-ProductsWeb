@@ -1,0 +1,1098 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<div class="page">
+
+    <!-- ================= TAB 1: TỔNG QUAN ================= -->
+    <div id="module-dashboard" class="admin-module">
+        <div class="ledger">
+            <div class="stat stat--lead">
+                <p class="stat-label">Doanh thu</p>
+                <p id="stat-revenue" class="stat-value">0đ</p>
+                <p class="stat-note">Cập nhật mỗi khi đổi trạng thái đơn</p>
+            </div>
+            <div class="stat">
+                <p class="stat-label">Đơn hàng</p>
+                <p id="stat-orders" class="stat-value">0</p>
+                <p class="stat-note">Đơn giữ suất Pre-Order</p>
+            </div>
+            <div class="stat">
+                <p class="stat-label">Chờ xác nhận cọc</p>
+                <p id="stat-pending" class="stat-value stat-value--warn">0</p>
+                <p class="stat-note">Cần duyệt để giao hàng</p>
+            </div>
+            <div class="stat">
+                <p class="stat-label">Thiết bị</p>
+                <p id="stat-devices" class="stat-value">0</p>
+                <p class="stat-note">Các phiên bản custom 75%</p>
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            <div class="card">
+                <div class="card-head">
+                    <h3 class="card-title">Đơn hàng theo trạng thái</h3>
+                    <p class="card-sub">Số đơn đang nằm ở từng bước của quy trình bán</p>
+                </div>
+                <div id="status-distribution-list" class="status-list"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3 class="card-title">Thao tác nhanh</h3>
+                </div>
+                <div class="action-list">
+                    <button type="button" onclick="switchAdminTab('orders')" class="btn btn-primary btn--block">
+                        <i class="fa-solid fa-boxes-packing"></i> Xử lý đơn hàng mới
+                    </button>
+                    <button type="button" onclick="openDeviceModal(0)" class="btn btn-ghost btn--block">
+                        <i class="fa-solid fa-plus"></i> Thêm thiết bị
+                    </button>
+                    <button type="button" onclick="switchAdminTab('users')" class="btn btn-ghost btn--block">
+                        <i class="fa-solid fa-user-shield"></i> Phân quyền tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 2: ĐƠN HÀNG (DonDatHang) ================= -->
+    <div id="module-orders" class="admin-module" hidden>
+        <div class="toolbar">
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="order-search-input" class="form-control"
+                       placeholder="Tìm theo mã đơn, số điện thoại, tên khách"
+                       aria-label="Tìm đơn hàng" oninput="debouncedLoadOrders()">
+            </div>
+            <div class="tabs" id="order-status-tabs" role="group" aria-label="Lọc theo trạng thái">
+                <button type="button" class="tab is-active" data-status-filter="ALL" onclick="filterOrderStatus('ALL', this)">Tất cả</button>
+            </div>
+        </div>
+
+        <div class="card card--table">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Điện thoại</th>
+                            <th class="text-right">Tổng tiền</th>
+                            <th>Thanh toán</th>
+                            <th>Trạng thái</th>
+                            <th>Đặt lúc</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-orders-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 3: THIẾT BỊ (ThongTinThietBi) ================= -->
+    <div id="module-devices" class="admin-module" hidden>
+        <div class="toolbar">
+            <h2 class="card-title">Bàn phím và thiết bị</h2>
+            <button type="button" onclick="openDeviceModal(0)" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus"></i> Thêm thiết bị
+            </button>
+        </div>
+
+        <div class="card card--table">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Tên thiết bị</th>
+                            <th>Danh mục</th>
+                            <th>Thương hiệu</th>
+                            <th class="text-right">Giá gốc</th>
+                            <th class="text-right">Giá đặt trước</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-devices-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 4: THƯƠNG HIỆU (ThuongHieu) ================= -->
+    <div id="module-brands" class="admin-module" hidden>
+        <div class="toolbar">
+            <h2 class="card-title">Thương hiệu bàn phím</h2>
+            <button type="button" onclick="openBrandModal('')" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus"></i> Thêm thương hiệu
+            </button>
+        </div>
+
+        <div class="card card--table">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên thương hiệu</th>
+                            <th>Giới thiệu</th>
+                            <th>Logo</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-brands-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 5: TRẠNG THÁI ĐƠN (TinhTrangDonHang) ================= -->
+    <div id="module-statuses" class="admin-module" hidden>
+        <div class="toolbar">
+            <h2 class="card-title">Danh mục trạng thái đơn hàng</h2>
+            <button type="button" onclick="openStatusModal('', '', 1)" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus"></i> Thêm trạng thái
+            </button>
+        </div>
+
+        <div class="card card--table">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên hiển thị</th>
+                            <th>Thứ tự</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-statuses-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 6: ĐÁNH GIÁ (DanhGia) ================= -->
+    <div id="module-reviews" class="admin-module" hidden>
+        <div class="card card--table">
+            <div class="card-head">
+                <h2 class="card-title">Đánh giá của khách hàng</h2>
+                <p class="card-sub">Xóa các đánh giá spam hoặc sai nội dung</p>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Họ và tên</th>
+                            <th>Số sao</th>
+                            <th>Nội dung</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-reviews-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 7: TÀI KHOẢN VÀ ROLE (TaiKhoan) ================= -->
+    <div id="module-users" class="admin-module" hidden>
+        <div class="card card--table">
+            <div class="card-head">
+                <h2 class="card-title">Tài khoản và phân quyền</h2>
+                <p class="card-sub">Đổi role giữa Admin và User</p>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ và tên</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-users-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 8: CÀI ĐẶT (CaiDat) ================= -->
+    <div id="module-settings" class="admin-module" hidden>
+        <div class="card card--form">
+            <div class="card-head">
+                <h2 class="card-title">Thêm hoặc sửa cấu hình</h2>
+                <p class="card-sub">Nhập trùng khóa sẽ ghi đè nội dung cũ</p>
+            </div>
+            <form id="form-save-setting" class="form-stack" onsubmit="handleSaveSettingSubmit(event)">
+                <div>
+                    <label class="form-label" for="set-key">Khóa cấu hình <span class="req">*</span></label>
+                    <input type="text" id="set-key" required placeholder="Ví dụ: STORE_NAME" class="form-control">
+                </div>
+                <div>
+                    <label class="form-label" for="set-content">Nội dung</label>
+                    <textarea id="set-content" rows="4" placeholder="Chuỗi hoặc JSON" class="form-control"></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu cấu hình
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card card--table">
+            <div class="card-head">
+                <h3 class="card-title">Cấu hình hiện có</h3>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Khóa</th>
+                            <th>Nội dung</th>
+                            <th>Ngày tạo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-settings-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= HỘP THOẠI THIẾT BỊ ================= -->
+<dialog id="device-modal" class="modal" aria-labelledby="device-modal-title">
+    <div class="modal__panel">
+        <button type="button" onclick="closeDeviceModal()" class="icon-btn modal__close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+        <h3 id="device-modal-title" class="modal__title">Thêm thiết bị</h3>
+
+        <form id="form-device" class="form-grid" onsubmit="handleDeviceSubmit(event)">
+            <input type="hidden" id="dev-uid" value="0">
+            <div class="span-2">
+                <label class="form-label" for="dev-name">Tên thiết bị <span class="req">*</span></label>
+                <input type="text" id="dev-name" required class="form-control">
+            </div>
+            <div>
+                <label class="form-label" for="dev-cat">Danh mục</label>
+                <input type="text" id="dev-cat" class="form-control">
+            </div>
+            <div>
+                <label class="form-label" for="dev-brand">Thương hiệu <span class="req">*</span></label>
+                <select id="dev-brand" required class="form-control"></select>
+            </div>
+            <div>
+                <label class="form-label" for="dev-price-orig">Giá gốc (đ)</label>
+                <input type="number" id="dev-price-orig" min="0" inputmode="numeric" required class="form-control">
+            </div>
+            <div>
+                <label class="form-label" for="dev-price-pre">Giá đặt trước (đ)</label>
+                <input type="number" id="dev-price-pre" min="0" inputmode="numeric" required class="form-control">
+            </div>
+            <div class="span-2">
+                <label class="form-label" for="dev-title-main">Tiêu đề chính</label>
+                <input type="text" id="dev-title-main" class="form-control">
+            </div>
+            <div class="span-2">
+                <label class="form-label" for="dev-title-sub">Tiêu đề phụ</label>
+                <input type="text" id="dev-title-sub" class="form-control">
+            </div>
+            <div class="span-2">
+                <label class="form-label" for="dev-img">Đường dẫn ảnh (URL)</label>
+                <input type="text" id="dev-img" class="form-control">
+            </div>
+            <div class="span-2">
+                <label class="form-label" for="dev-yt">Link YouTube review</label>
+                <input type="text" id="dev-yt" class="form-control">
+            </div>
+            <div class="span-2 modal__actions">
+                <button type="button" onclick="closeDeviceModal()" class="btn btn-ghost">Hủy</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu thiết bị</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ================= HỘP THOẠI SỬA ROLE ================= -->
+<dialog id="user-modal" class="modal modal--narrow" aria-labelledby="user-modal-title">
+    <div class="modal__panel">
+        <button type="button" onclick="closeUserModal()" class="icon-btn modal__close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+        <h3 id="user-modal-title" class="modal__title">Sửa tài khoản</h3>
+
+        <form id="form-user-edit" class="form-stack" onsubmit="handleUserSubmit(event)">
+            <input type="hidden" id="usr-uid" value="0">
+            <div>
+                <label class="form-label" for="usr-fullname">Họ và tên <span class="req">*</span></label>
+                <input type="text" id="usr-fullname" required class="form-control">
+            </div>
+            <div>
+                <label class="form-label" for="usr-email">Email <span class="req">*</span></label>
+                <input type="email" id="usr-email" required class="form-control">
+            </div>
+            <div>
+                <label class="form-label" for="usr-role">Role <span class="req">*</span></label>
+                <select id="usr-role" class="form-control">
+                    <option value="User">User (người dùng thường)</option>
+                    <option value="Admin">Admin (quản trị hệ thống)</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label" for="usr-pass">Mật khẩu mới</label>
+                <input type="password" id="usr-pass" placeholder="••••••••" autocomplete="new-password" class="form-control">
+                <p class="form-hint">Để trống nếu giữ mật khẩu hiện tại.</p>
+            </div>
+            <div class="modal__actions">
+                <button type="button" onclick="closeUserModal()" class="btn btn-ghost">Hủy</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu tài khoản</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ================= HỘP THOẠI THƯƠNG HIỆU ================= -->
+<dialog id="brand-modal" class="modal" aria-labelledby="brand-modal-title">
+    <div class="modal__panel">
+        <button type="button" onclick="closeBrandModal()" class="icon-btn modal__close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+        <h3 id="brand-modal-title" class="modal__title">Thêm thương hiệu</h3>
+        <form id="form-brand" class="form-stack" onsubmit="handleBrandSubmit(event)">
+            <div>
+                <label class="form-label" for="brd-code">Mã thương hiệu <span class="req">*</span></label>
+                <input type="text" id="brd-code" required maxlength="50" class="form-control">
+                <p class="form-hint" id="brd-code-hint">Thiết bị gắn với thương hiệu qua mã này, không đổi được sau khi tạo.</p>
+            </div>
+            <div>
+                <label class="form-label" for="brd-name">Tên thương hiệu <span class="req">*</span></label>
+                <input type="text" id="brd-name" required class="form-control">
+            </div>
+            <div>
+                <label class="form-label" for="brd-intro">Giới thiệu</label>
+                <textarea id="brd-intro" rows="3" class="form-control"></textarea>
+            </div>
+            <div>
+                <label class="form-label" for="brd-logo">Đường dẫn logo (URL)</label>
+                <input type="text" id="brd-logo" class="form-control">
+            </div>
+            <div class="modal__actions">
+                <button type="button" onclick="closeBrandModal()" class="btn btn-ghost">Hủy</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu thương hiệu</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ================= HỘP THOẠI TRẠNG THÁI ĐƠN ================= -->
+<dialog id="status-modal" class="modal modal--narrow" aria-labelledby="status-modal-title">
+    <div class="modal__panel">
+        <button type="button" onclick="closeStatusModal()" class="icon-btn modal__close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+        <h3 id="status-modal-title" class="modal__title">Thêm trạng thái</h3>
+        <form id="form-status" class="form-stack" onsubmit="handleStatusSubmit(event)">
+            <div>
+                <label class="form-label" for="stt-code">Mã trạng thái <span class="req">*</span></label>
+                <input type="text" id="stt-code" required maxlength="50" class="form-control">
+                <p class="form-hint">Mã được lưu vào từng đơn hàng, không đổi được sau khi tạo.</p>
+            </div>
+            <div>
+                <label class="form-label" for="stt-name">Tên hiển thị <span class="req">*</span></label>
+                <input type="text" id="stt-name" required class="form-control">
+            </div>
+            <div>
+                <label class="form-label" for="stt-order">Thứ tự</label>
+                <input type="number" id="stt-order" min="0" value="1" inputmode="numeric" class="form-control">
+                <p class="form-hint">Số nhỏ hiện trước ở ô lọc và ô chọn trạng thái.</p>
+            </div>
+            <div class="modal__actions">
+                <button type="button" onclick="closeStatusModal()" class="btn btn-ghost">Hủy</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu trạng thái</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+@section Scripts {
+    <script>
+        /* ---------- Tiện ích dùng chung ---------- */
+        function getCsrfToken() {
+            var input = document.querySelector('input[name="__RequestVerificationToken"]');
+            return input ? input.value : '';
+        }
+
+        // Mọi chuỗi từ API đi qua esc() trước khi vào innerHTML (chặn XSS từ tên khách, nội dung đánh giá)
+        function esc(v) {
+            return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+        function money(n) { return Number(n || 0).toLocaleString('vi-VN') + 'đ'; }
+
+        async function send(url, body, asJson) {
+            try {
+                var res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': asJson ? 'application/json' : 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': getCsrfToken()
+                    },
+                    body: asJson ? JSON.stringify(body) : body
+                });
+                // Phiên hết hạn thì [Authorize] trả trang đăng nhập (HTML), token sai thì trả 400 rỗng: nói rõ thay vì báo "mất kết nối"
+                if (!(res.headers.get('content-type') || '').includes('application/json')) {
+                    var msg = res.redirected || res.status === 401 || res.status === 403
+                        ? 'Phiên đăng nhập đã hết hạn. Tải lại trang để đăng nhập lại.'
+                        : res.status === 400
+                            ? 'Máy chủ từ chối yêu cầu (400). Tải lại trang để lấy mã bảo mật mới rồi thử lại.'
+                            : 'Máy chủ gặp lỗi (' + res.status + '). Xem log của AdminController.';
+                    return { success: false, message: msg };
+                }
+                return await res.json();
+            } catch (e) {
+                return { success: false, message: 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.' };
+            }
+        }
+
+        function report(json, okTitle) {
+            if (json.success) {
+                Swal.fire({ icon: 'success', title: okTitle || 'Đã lưu', text: json.message, timer: 1400, showConfirmButton: false });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Chưa thực hiện được', text: json.message || 'Máy chủ từ chối yêu cầu.' });
+            }
+        }
+
+        async function confirmDelete(title) {
+            var r = await Swal.fire({
+                icon: 'warning', title: title, showCancelButton: true,
+                confirmButtonText: 'Xóa', cancelButtonText: 'Hủy', confirmButtonColor: '#a82f2a'
+            });
+            return r.isConfirmed;
+        }
+
+        /* ---------- Trạng thái bảng: loading, empty, error ---------- */
+        var reqSeq = {};
+
+        function setTableState(tbodyId, cols, state, text, retryFn, actionHtml) {
+            var tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            if (state === 'loading') {
+                var cells = '<td><span class="skeleton"></span></td>'.repeat(cols);
+                tbody.innerHTML = ('<tr class="skeleton-row">' + cells + '</tr>').repeat(4);
+                return;
+            }
+            var isError = state === 'error';
+            var action = isError
+                ? '<button type="button" class="btn btn-ghost btn-sm" onclick="' + retryFn + '()"><i class="fa-solid fa-rotate-right"></i> Thử lại</button>'
+                : (actionHtml || '');
+            tbody.innerHTML =
+                '<tr><td colspan="' + cols + '"><div class="state' + (isError ? ' state--error' : '') + '">' +
+                '<p class="state-title">' + (isError ? 'Không tải được dữ liệu' : 'Chưa có dữ liệu') + '</p>' +
+                '<p class="state-text">' + text + '</p>' + action + '</div></td></tr>';
+        }
+
+        // cfg: tbodyId, cols, url, retry (tên hàm), empty (câu hướng dẫn), emptyAction, row (hàm dựng <tr>), onData
+        // reqSeq bỏ kết quả của request cũ khi gõ tìm kiếm nhanh (response về sai thứ tự gây race condition hiển thị)
+        async function loadList(cfg) {
+            var tbody = document.getElementById(cfg.tbodyId);
+            if (!tbody) return;
+            var my = (reqSeq[cfg.tbodyId] = (reqSeq[cfg.tbodyId] || 0) + 1);
+            setTableState(cfg.tbodyId, cfg.cols, 'loading');
+            try {
+                var res = await fetch(cfg.url);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                var json = await res.json();
+                if (my !== reqSeq[cfg.tbodyId]) return;
+                if (!json.success) throw new Error(json.message || 'Lỗi từ máy chủ');
+                if (cfg.onData) cfg.onData(json.data);
+                if (!json.data.length) {
+                    setTableState(cfg.tbodyId, cfg.cols, 'empty', cfg.empty, null, cfg.emptyAction);
+                    return;
+                }
+                tbody.innerHTML = json.data.map(cfg.row).join('');
+            } catch (err) {
+                if (my !== reqSeq[cfg.tbodyId]) return;
+                setTableState(cfg.tbodyId, cfg.cols, 'error', 'Kiểm tra kết nối rồi bấm thử lại.', cfg.retry);
+            }
+        }
+
+        var currentStatusFilter = 'ALL';
+        var devicesCache = [];
+        var usersCache = [];
+        var brandsCache = [];
+
+        window.addEventListener('load', function () {
+            initSidebarToggle();
+            loadAdminStats();
+            loadAdminOrders();
+            loadAdminDevices();
+            loadAdminBrands();
+            loadAdminStatuses();
+            loadAdminReviews();
+            loadAdminUsers();
+            loadAdminSettings();
+        });
+
+        /* ---------- 1. Chuyển tab ---------- */
+        var TAB_TITLES = {
+            dashboard: ['Tổng quan', 'Tổng quan'],
+            orders: ['Đơn đặt hàng Pre-Order', 'Đơn hàng'],
+            devices: ['Bàn phím và thiết bị', 'Thiết bị'],
+            brands: ['Thương hiệu đối tác', 'Thương hiệu'],
+            statuses: ['Quy trình đơn hàng', 'Trạng thái'],
+            reviews: ['Đánh giá của khách', 'Đánh giá'],
+            users: ['Tài khoản và phân quyền', 'Tài khoản'],
+            settings: ['Cài đặt hệ thống', 'Cài đặt']
+        };
+
+        function switchAdminTab(tabId, btnEl) {
+            document.querySelectorAll('.admin-module').forEach(function (el) { el.hidden = true; });
+            var activeTab = document.getElementById('module-' + tabId);
+            if (activeTab) activeTab.hidden = false;
+
+            // Lối tắt ở dashboard gọi hàm này không truyền nút, nên tự tìm mục menu tương ứng
+            if (!btnEl) {
+                btnEl = document.querySelector('.sidebar-nav .nav-link[onclick*="\'' + tabId + '\'"]');
+            }
+            if (btnEl) {
+                document.querySelectorAll('.sidebar-nav .nav-link').forEach(function (el) { el.classList.remove('is-active'); });
+                btnEl.classList.add('is-active');
+            }
+
+            var t = TAB_TITLES[tabId];
+            var titleEl = document.getElementById('admin-page-title');
+            var breadEl = document.getElementById('admin-breadcrumb-active');
+            if (titleEl && t) titleEl.textContent = t[0];
+            if (breadEl && t) breadEl.textContent = t[1];
+            window.scrollTo({ top: 0 });
+        }
+
+        /* ---------- 2. Sidebar và menu hồ sơ ---------- */
+        function initSidebarToggle() {
+            var sidebarBtn = document.getElementById('btn-toggle-sidebar');
+            var profileBtn = document.getElementById('btn-profile-toggle');
+            var profileMenu = document.getElementById('admin-profile-menu');
+
+            if (sidebarBtn) {
+                sidebarBtn.addEventListener('click', function () {
+                    document.body.classList.toggle('sidebar-collapsed');
+                });
+            }
+
+            if (profileBtn && profileMenu) {
+                profileBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var isExpanded = profileBtn.getAttribute('aria-expanded') === 'true';
+                    profileBtn.setAttribute('aria-expanded', !isExpanded);
+                    profileMenu.hidden = isExpanded;
+                });
+
+                document.addEventListener('click', function () {
+                    profileBtn.setAttribute('aria-expanded', 'false');
+                    profileMenu.hidden = true;
+                });
+            }
+        }
+
+        /* ---------- 3. Thống kê ---------- */
+        async function loadAdminStats() {
+            var distEl = document.getElementById('status-distribution-list');
+            try {
+                var res = await fetch('/Admin/GetDashboardStats');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                var json = await res.json();
+                if (!json.success) throw new Error('api');
+                var d = json.data;
+                document.getElementById('stat-revenue').textContent = money(d.tongDoanhThu);
+                document.getElementById('stat-orders').textContent = d.tongDonHang;
+                document.getElementById('stat-pending').textContent = d.donHangChoXacNhan;
+                document.getElementById('stat-devices').textContent = d.tongThietBi;
+
+                if (distEl) {
+                    var list = d.thongKeTrangThai || [];
+                    if (!list.length) {
+                        distEl.innerHTML = '<div class="state"><p class="state-title">Chưa có đơn nào</p><p class="state-text">Đơn đầu tiên sẽ hiện ở đây ngay khi khách đặt.</p></div>';
+                        return;
+                    }
+                    // Thanh đo tính theo trạng thái nhiều đơn nhất, không dùng hệ số cố định
+                    var max = Math.max.apply(null, list.map(function (s) { return s.soLuong; }).concat(1));
+                    distEl.innerHTML = list.map(function (st) {
+                        return '<div class="status-row">' +
+                            '<div class="status-row__head"><span>' + esc(st.tenTinhTrang) + '</span>' +
+                            '<span class="status-row__count">' + esc(st.soLuong) + ' <small>đơn</small></span></div>' +
+                            '<div class="meter"><span style="width:' + Math.round(st.soLuong / max * 100) + '%"></span></div></div>';
+                    }).join('');
+                }
+            } catch (err) {
+                if (distEl) {
+                    distEl.innerHTML = '<div class="state state--error"><p class="state-title">Không tải được thống kê</p>' +
+                        '<p class="state-text">Kiểm tra kết nối rồi bấm thử lại.</p>' +
+                        '<button type="button" class="btn btn-ghost btn-sm" onclick="loadAdminStats()"><i class="fa-solid fa-rotate-right"></i> Thử lại</button></div>';
+                }
+            }
+        }
+
+        /* ---------- 4. Đơn hàng ---------- */
+        // Mã trạng thái do bảng TinhTrangDonHang quyết định (ví dụ MOI). Đọc một lần, dùng chung cho ô chọn và các tab lọc.
+        var statusCache = [];
+        var statusPromise = null;
+
+        function fetchStatuses(force) {
+            if (force || !statusPromise) {
+                statusPromise = fetch('/Admin/GetOrderStatuses')
+                    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                    .then(function (j) { if (!j.success) throw new Error('api'); statusCache = j.data; return statusCache; })
+                    .catch(function () { statusPromise = null; return statusCache; });
+            }
+            return statusPromise;
+        }
+
+        function statusName(code) {
+            var s = statusCache.find(function (x) { return x.maTinhTrang === code; });
+            return s ? s.tenTinhTrang : code;
+        }
+
+        // Màu chip theo từ khóa trong mã hoặc tên, vì bảng trạng thái không có cột màu
+        function statusTone(code) {
+            var k = (String(code || '') + ' ' + statusName(code)).toUpperCase();
+            if (/HUY|HỦY|CANCEL/.test(k)) return 'bad';
+            if (/HOAN|HOÀN|XONG|DONE/.test(k)) return 'good';
+            if (/ĐÃ CỌC|DA_COC|ĐANG|DANG|GIAO/.test(k)) return 'info';
+            if (/MOI|MỚI|CHO|CHỜ/.test(k)) return 'warn';
+            return 'info';
+        }
+
+        function renderStatusTabs() {
+            var box = document.getElementById('order-status-tabs');
+            if (!box) return;
+            var html = '<button type="button" class="tab' + (currentStatusFilter === 'ALL' ? ' is-active' : '') +
+                '" data-status-filter="ALL" onclick="filterOrderStatus(\'ALL\', this)">Tất cả</button>';
+            statusCache.forEach(function (s) {
+                html += '<button type="button" class="tab' + (currentStatusFilter === s.maTinhTrang ? ' is-active' : '') +
+                    '" data-status-filter="' + esc(s.maTinhTrang) + '" data-code="' + esc(s.maTinhTrang) +
+                    '" onclick="filterOrderStatus(this.dataset.code, this)">' + esc(s.tenTinhTrang) + '</button>';
+            });
+            box.innerHTML = html;
+        }
+
+        // Debounce 300ms: mỗi phím gõ không bắn một request
+        var orderTimer;
+        function debouncedLoadOrders() {
+            clearTimeout(orderTimer);
+            orderTimer = setTimeout(loadAdminOrders, 300);
+        }
+
+        async function loadAdminOrders() {
+            await fetchStatuses();
+            renderStatusTabs();
+            var input = document.getElementById('order-search-input');
+            var search = input ? input.value : '';
+            return loadList({
+                tbodyId: 'tbl-orders-tbody', cols: 7, retry: 'loadAdminOrders',
+                url: '/Admin/GetOrders?search=' + encodeURIComponent(search) + '&status=' + encodeURIComponent(currentStatusFilter),
+                empty: search || currentStatusFilter !== 'ALL'
+                    ? 'Không có đơn nào khớp bộ lọc hiện tại. Thử đổi từ khóa hoặc chọn "Tất cả".'
+                    : 'Khi khách đặt Pre-Order, đơn sẽ xuất hiện ở đây.',
+                row: function (o) {
+                    var known = statusCache.some(function (s) { return s.maTinhTrang === o.maTinhTrang; });
+                    var opts = statusCache.map(function (s) {
+                        return '<option value="' + esc(s.maTinhTrang) + '"' + (o.maTinhTrang === s.maTinhTrang ? ' selected' : '') + '>' + esc(s.tenTinhTrang) + '</option>';
+                    }).join('');
+                    // Đơn mang mã không còn trong bảng trạng thái vẫn phải hiện đúng mã của nó
+                    if (!known) opts = '<option value="' + esc(o.maTinhTrang) + '" selected>' + esc(o.maTinhTrang) + '</option>' + opts;
+                    return '<tr>' +
+                        '<td><span class="order-code">' + esc(o.maDonHang) + '</span></td>' +
+                        '<td><div class="cell-main">' + esc(o.tenKhachHang) + '</div>' +
+                        '<div class="cell-sub clamp" title="' + esc(o.diaChi) + '">' + esc(o.diaChi) + '</div></td>' +
+                        '<td class="nowrap">' + esc(o.sdt) + '</td>' +
+                        '<td class="num text-right cell-main">' + money(o.tongTien) + '</td>' +
+                        '<td><span class="badge">' + esc(o.maHinhThucThanhToan) + '</span></td>' +
+                        '<td><select class="form-control status-select" aria-label="Trạng thái đơn ' + esc(o.maDonHang) + '"' +
+                        ' data-tone="' + statusTone(o.maTinhTrang) + '" data-prev="' + esc(o.maTinhTrang) + '"' +
+                        ' onchange="changeOrderStatus(' + Number(o.uid) + ', this)">' + opts + '</select></td>' +
+                        '<td class="nowrap cell-sub">' + new Date(o.thoiGianDat).toLocaleString('vi-VN') + '</td>' +
+                        '</tr>';
+                }
+            });
+        }
+
+        function filterOrderStatus(status, btn) {
+            currentStatusFilter = status;
+            document.querySelectorAll('[data-status-filter]').forEach(function (b) { b.classList.remove('is-active'); });
+            if (btn) btn.classList.add('is-active');
+            loadAdminOrders();
+        }
+
+        async function changeOrderStatus(orderId, el) {
+            var prev = el.dataset.prev, next = el.value;
+            el.disabled = true;
+            var json = await send('/Admin/UpdateOrderStatus', 'orderId=' + orderId + '&status=' + encodeURIComponent(next), false);
+            el.disabled = false;
+            if (json.success) {
+                el.dataset.prev = next;
+                el.dataset.tone = statusTone(next);
+                Swal.fire({ icon: 'success', title: json.message || 'Đã cập nhật', timer: 1000, showConfirmButton: false });
+                loadAdminStats();
+            } else {
+                el.value = prev; // trả ô chọn về trạng thái cũ khi server từ chối
+                report(json);
+            }
+        }
+
+        /* ---------- 5. Thiết bị ---------- */
+        function loadAdminDevices() {
+            return loadList({
+                tbodyId: 'tbl-devices-tbody', cols: 7, url: '/Admin/GetDevices', retry: 'loadAdminDevices',
+                empty: 'Thêm bàn phím đầu tiên để khách có thể đặt trước.',
+                emptyAction: '<button type="button" class="btn btn-primary btn-sm" onclick="openDeviceModal(0)"><i class="fa-solid fa-plus"></i> Thêm thiết bị</button>',
+                onData: function (data) { devicesCache = data; },
+                row: function (d) {
+                    var img = d.anhThietBi || 'https://images.unsplash.com/photo-1595225476474-87563907a212?w=96';
+                    return '<tr>' +
+                        '<td><img class="thumb" src="' + esc(img) + '" alt="" width="48" height="48" loading="lazy"></td>' +
+                        '<td><div class="cell-main clamp" title="' + esc(d.tenThietBi) + '">' + esc(d.tenThietBi) + '</div></td>' +
+                        '<td>' + esc(d.danhMuc) + '</td>' +
+                        '<td><span class="badge badge--warn">' + esc(d.maThuongHieu) + '</span></td>' +
+                        '<td class="num text-right"><del class="price-old">' + money(d.giaGoc) + '</del></td>' +
+                        '<td class="num text-right price-new">' + money(d.giaDatTruoc) + '</td>' +
+                        '<td class="text-right"><div class="row-actions">' +
+                        '<button type="button" onclick="openDeviceModal(' + Number(d.uid) + ')" class="icon-btn" aria-label="Sửa thiết bị"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                        '<button type="button" onclick="deleteDevice(' + Number(d.uid) + ')" class="icon-btn icon-btn--danger" aria-label="Xóa thiết bị"><i class="fa-solid fa-trash"></i></button>' +
+                        '</div></td></tr>';
+                }
+            });
+        }
+
+        // Thương hiệu chọn từ danh sách thật, tránh nhập sai mã gây lỗi khóa ngoại ở server
+        function fillBrandOptions(selected) {
+            var el = document.getElementById('dev-brand');
+            var html = '<option value="">Chọn thương hiệu</option>' + brandsCache.map(function (b) {
+                return '<option value="' + esc(b.maThuongHieu) + '">' + esc(b.tenThuongHieu) + ' (' + esc(b.maThuongHieu) + ')</option>';
+            }).join('');
+            if (selected && !brandsCache.some(function (b) { return b.maThuongHieu === selected; })) {
+                html += '<option value="' + esc(selected) + '">' + esc(selected) + ' (không còn trong danh sách)</option>';
+            }
+            el.innerHTML = html;
+            el.value = selected || '';
+        }
+
+        async function openDeviceModal(uid) {
+            var dialog = document.getElementById('device-modal');
+            if (!dialog) return;
+            if (!brandsCache.length) await loadAdminBrands();
+            if (!brandsCache.length) {
+                Swal.fire({ icon: 'info', title: 'Chưa có thương hiệu', text: 'Hãy thêm ít nhất một thương hiệu trước khi thêm thiết bị.' });
+                return;
+            }
+
+            if (uid === 0) {
+                document.getElementById('form-device').reset();
+                document.getElementById('dev-uid').value = 0;
+                fillBrandOptions('');
+                document.getElementById('device-modal-title').textContent = 'Thêm thiết bị';
+            } else {
+                var item = devicesCache.find(function (x) { return x.uid === uid; });
+                if (!item) return;
+                document.getElementById('dev-uid').value = item.uid;
+                document.getElementById('dev-name').value = item.tenThietBi;
+                document.getElementById('dev-cat').value = item.danhMuc;
+                fillBrandOptions(item.maThuongHieu);
+                document.getElementById('dev-price-orig').value = item.giaGoc;
+                document.getElementById('dev-price-pre').value = item.giaDatTruoc;
+                document.getElementById('dev-title-main').value = item.tieuDeChinh;
+                document.getElementById('dev-title-sub').value = item.tieuDePhu;
+                document.getElementById('dev-img').value = item.anhThietBi;
+                document.getElementById('dev-yt').value = item.linkYoutubeReview;
+                document.getElementById('device-modal-title').textContent = 'Sửa thiết bị #' + uid;
+            }
+            dialog.showModal();
+        }
+
+        function closeDeviceModal() {
+            var dialog = document.getElementById('device-modal');
+            if (dialog) dialog.close();
+        }
+
+        async function handleDeviceSubmit(e) {
+            e.preventDefault();
+            var uid = parseInt(document.getElementById('dev-uid').value);
+            // Form không có ô nhập thông số và ảnh hands-on: giữ giá trị cũ, nếu gửi chuỗi rỗng server sẽ xóa mất dữ liệu đó
+            var old = devicesCache.find(function (x) { return x.uid === uid; }) || {};
+            var payload = {
+                uid: uid,
+                tenThietBi: document.getElementById('dev-name').value,
+                danhMuc: document.getElementById('dev-cat').value,
+                maThuongHieu: document.getElementById('dev-brand').value,
+                giaGoc: parseFloat(document.getElementById('dev-price-orig').value),
+                giaDatTruoc: parseFloat(document.getElementById('dev-price-pre').value),
+                tieuDeChinh: document.getElementById('dev-title-main').value,
+                tieuDePhu: document.getElementById('dev-title-sub').value,
+                anhThietBi: document.getElementById('dev-img').value,
+                linkYoutubeReview: document.getElementById('dev-yt').value,
+                thongSoKyThuat: old.thongSoKyThuat || '',
+                danhSachAnhHandsOn: old.danhSachAnhHandsOn || ''
+            };
+
+            var json = await send('/Admin/UpsertDevice', payload, true);
+            if (json.success) {
+                closeDeviceModal(); // đóng dialog trước khi bật Swal, vì dialog modal nằm trên cùng và che popup
+                loadAdminDevices();
+                loadAdminStats();
+            }
+            report(json);
+        }
+
+        async function deleteDevice(id) {
+            if (!(await confirmDelete('Xóa thiết bị này?'))) return;
+            var json = await send('/Admin/DeleteDevice', 'id=' + id, false);
+            if (json.success) { loadAdminDevices(); loadAdminStats(); }
+            report(json, 'Đã xóa');
+        }
+
+        /* ---------- 6. Thương hiệu ---------- */
+        function loadAdminBrands() {
+            return loadList({
+                tbodyId: 'tbl-brands-tbody', cols: 5, url: '/Admin/GetBrands', retry: 'loadAdminBrands',
+                empty: 'Thêm thương hiệu trước khi gắn thiết bị vào.',
+                emptyAction: '<button type="button" class="btn btn-primary btn-sm" onclick="openBrandModal(\'\')"><i class="fa-solid fa-plus"></i> Thêm thương hiệu</button>',
+                onData: function (data) { brandsCache = data; },
+                row: function (b) {
+                    var logo = b.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120';
+                    return '<tr>' +
+                        '<td><span class="keycap">' + esc(b.maThuongHieu) + '</span></td>' +
+                        '<td class="cell-main">' + esc(b.tenThuongHieu) + '</td>' +
+                        '<td><div class="clamp" title="' + esc(b.gioiThieu) + '">' + esc(b.gioiThieu) + '</div></td>' +
+                        '<td><img class="logo-thumb" src="' + esc(logo) + '" alt="Logo ' + esc(b.tenThuongHieu) + '" height="32" loading="lazy"></td>' +
+                        '<td class="text-right"><div class="row-actions">' +
+                        '<button type="button" data-code="' + esc(b.maThuongHieu) + '" onclick="openBrandModal(this.dataset.code)" class="icon-btn" aria-label="Sửa thương hiệu"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                        '<button type="button" data-code="' + esc(b.maThuongHieu) + '" onclick="deleteBrand(this.dataset.code)" class="icon-btn icon-btn--danger" aria-label="Xóa thương hiệu"><i class="fa-solid fa-trash"></i></button>' +
+                        '</div></td></tr>';
+                }
+            });
+        }
+
+        var brandEditing = false;
+
+        function openBrandModal(code) {
+            var dialog = document.getElementById('brand-modal');
+            if (!dialog) return;
+            var item = code ? brandsCache.find(function (x) { return x.maThuongHieu === code; }) : null;
+            brandEditing = !!item;
+            var codeInput = document.getElementById('brd-code');
+            document.getElementById('form-brand').reset();
+            codeInput.value = item ? item.maThuongHieu : '';
+            codeInput.readOnly = brandEditing; // mã là khóa chính, đổi mã sẽ tạo bản ghi mới
+            document.getElementById('brd-name').value = item ? item.tenThuongHieu || '' : '';
+            document.getElementById('brd-intro').value = item ? item.gioiThieu || '' : '';
+            document.getElementById('brd-logo').value = item ? item.logo || '' : '';
+            document.getElementById('brand-modal-title').textContent = brandEditing ? 'Sửa thương hiệu' : 'Thêm thương hiệu';
+            dialog.showModal();
+        }
+
+        function closeBrandModal() {
+            var dialog = document.getElementById('brand-modal');
+            if (dialog) dialog.close();
+        }
+
+        async function handleBrandSubmit(e) {
+            e.preventDefault();
+            var code = document.getElementById('brd-code').value.trim();
+            if (!brandEditing && brandsCache.some(function (b) { return b.maThuongHieu.toLowerCase() === code.toLowerCase(); })) {
+                Swal.fire({ icon: 'error', title: 'Mã đã tồn tại', text: 'Chọn một mã khác, hoặc sửa thương hiệu có sẵn.' });
+                return;
+            }
+            var payload = {
+                maThuongHieu: code,
+                tenThuongHieu: document.getElementById('brd-name').value.trim(),
+                gioiThieu: document.getElementById('brd-intro').value.trim(),
+                logo: document.getElementById('brd-logo').value.trim()
+            };
+            var json = await send('/Admin/UpsertBrand', payload, true);
+            if (json.success) { closeBrandModal(); loadAdminBrands(); }
+            report(json);
+        }
+
+        async function deleteBrand(code) {
+            if (!(await confirmDelete('Xóa thương hiệu ' + code + '?'))) return;
+            // Action DeleteBrand nhận tham số tên "code", không phải "id"
+            var json = await send('/Admin/DeleteBrand', 'code=' + encodeURIComponent(code), false);
+            if (json.success) loadAdminBrands();
+            report(json, 'Đã xóa');
+        }
+
+        /* ---------- 7. Trạng thái đơn ---------- */
+        function loadAdminStatuses() {
+            return loadList({
+                tbodyId: 'tbl-statuses-tbody', cols: 4, url: '/Admin/GetOrderStatuses', retry: 'loadAdminStatuses',
+                empty: 'Thêm các bước xử lý đơn (chờ cọc, đang giao, hoàn tất) để dùng ở bảng đơn hàng.',
+                emptyAction: '<button type="button" class="btn btn-primary btn-sm" onclick="openStatusModal(\'\', \'\', 1)"><i class="fa-solid fa-plus"></i> Thêm trạng thái</button>',
+                onData: function (data) {
+                    statusCache = data;
+                    statusPromise = Promise.resolve(data);
+                    renderStatusTabs();
+                },
+                row: function (s) {
+                    return '<tr>' +
+                        '<td><span class="keycap">' + esc(s.maTinhTrang) + '</span></td>' +
+                        '<td class="cell-main">' + esc(s.tenTinhTrang) + '</td>' +
+                        '<td class="num">' + esc(s.ordering) + '</td>' +
+                        '<td class="text-right"><div class="row-actions">' +
+                        '<button type="button" data-code="' + esc(s.maTinhTrang) + '" data-name="' + esc(s.tenTinhTrang) + '" data-order="' + esc(s.ordering) + '"' +
+                        ' onclick="openStatusModal(this.dataset.code, this.dataset.name, Number(this.dataset.order))" class="icon-btn" aria-label="Sửa trạng thái"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                        '<button type="button" data-code="' + esc(s.maTinhTrang) + '" onclick="deleteStatus(this.dataset.code)" class="icon-btn icon-btn--danger" aria-label="Xóa trạng thái"><i class="fa-solid fa-trash"></i></button>' +
+                        '</div></td></tr>';
+                }
+            });
+        }
+
+        var statusEditing = false;
+
+        function openStatusModal(code, name, ordering) {
+            var dialog = document.getElementById('status-modal');
+            if (!dialog) return;
+            statusEditing = !!code;
+            var codeInput = document.getElementById('stt-code');
+            codeInput.value = code || '';
+            codeInput.readOnly = statusEditing;
+            document.getElementById('stt-name').value = name || '';
+            document.getElementById('stt-order').value = ordering == null ? 1 : ordering;
+            document.getElementById('status-modal-title').textContent = statusEditing ? 'Sửa trạng thái' : 'Thêm trạng thái';
+            dialog.showModal();
+        }
+
+        function closeStatusModal() {
+            var dialog = document.getElementById('status-modal');
+            if (dialog) dialog.close();
+        }
+
+        async function handleStatusSubmit(e) {
+            e.preventDefault();
+            var code = document.getElementById('stt-code').value.trim();
+            if (!statusEditing && statusCache.some(function (s) { return s.maTinhTrang.toLowerCase() === code.toLowerCase(); })) {
+                Swal.fire({ icon: 'error', title: 'Mã đã tồn tại', text: 'Chọn một mã khác, hoặc sửa trạng thái có sẵn.' });
+                return;
+            }
+            var payload = {
+                maTinhTrang: code,
+                tenTinhTrang: document.getElementById('stt-name').value.trim(),
+                ordering: parseInt(document.getElementById('stt-order').value) || 0
+            };
+            var json = await send('/Admin/UpsertOrderStatus', payload, true);
+            if (json.success) {
+                closeStatusModal();
+                loadAdminStatuses();
+                loadAdminOrders();
+                loadAdminStats();
+            }
+            report(json);
+        }
+
+        async function deleteStatus(code) {
+            if (!(await confirmDelete('Xóa trạng thái ' + code + '?'))) return;
+            var json = await send('/Admin/DeleteOrderStatus', 'code=' + encodeURIComponent(code), false);
+            if (json.success) { loadAdminStatuses(); loadAdminOrders(); }
+            report(json, 'Đã xóa');
+        }
+
+        /* ---------- 8. Đánh giá ---------- */
+        function loadAdminReviews() {
+            return loadList({
+                tbodyId: 'tbl-reviews-tbody', cols: 4, url: '/Admin/GetReviews', retry: 'loadAdminReviews',
+                empty: 'Đánh giá của khách sẽ hiện ở đây sau khi họ nhận hàng.',
+                row: function (r) {
+                    var n = Math.max(0, Math.min(5, Number(r.soSao) || 0));
+                    return '<tr>' +
+                        '<td class="cell-main">' + esc(r.hoTen) + '</td>' +
+                        '<td><span class="stars" role="img" aria-label="' + n + ' trên 5 sao">' +
+                        '★'.repeat(n) + '<span class="off">' + '★'.repeat(5 - n) + '</span></span></td>' +
+                        '<td><div class="clamp clamp--3" title="' + esc(r.noiDungDanhGia) + '">' + esc(r.noiDungDanhGia) + '</div></td>' +
+                        '<td class="text-right"><div class="row-actions">' +
+                        '<button type="button" onclick="deleteReview(' + Number(r.uid) + ')" class="icon-btn icon-btn--danger" aria-label="Xóa đánh giá"><i class="fa-solid fa-trash"></i></button>' +
+                        '</div></td></tr>';
+                }
+            });
+        }
+
+        async function deleteReview(id) {
+            if (!(await confirmDelete('Xóa đánh giá này?'))) return;
+            var json = await send('/Admin/DeleteReview', 'id=' + id, false);
+            if (json.success) loadAdminReviews();
+            report(json, 'Đã xóa');
+        }
+
+        /* ---------- 9. Tài khoản ---------- */
+        function loadAdminUsers() {
+            return loadList({
+                tbodyId: 'tbl-users-tbody', cols: 5, url: '/Admin/GetUsers', retry: 'loadAdminUsers',
+                empty: 'Tài khoản xuất hiện ở đây sau khi người dùng đăng ký.',
+                onData: function (data) { usersCache = data; },
+                row: function (u) {
+                    return '<tr>' +
+                        '<td class="num">' + esc(u.uid) + '</td>' +
+                        '<td class="cell-main">' + esc(u.hoTen) + '</td>' +
+                        '<td>' + esc(u.email) + '</td>' +
+                        '<td><span class="badge ' + (u.role === 'Admin' ? 'badge--warn' : 'badge--info') + '">' + esc(u.role) + '</span></td>' +
+                        '<td class="text-right"><button type="button" onclick="openUserModal(' + Number(u.uid) + ')" class="icon-btn"><i class="fa-solid fa-user-pen"></i> Sửa quyền</button></td>' +
+                        '</tr>';
+                }
+            });
+        }
+
+        function openUserModal(uid) {
+            var dialog = document.getElementById('user-modal');
+            var item = usersCache.find(function (x) { return x.uid === uid; });
+            if (dialog && item) {
+                document.getElementById('usr-uid').value = item.uid;
+                document.getElementById('usr-fullname').value = item.hoTen;
+                document.getElementById('usr-email').value = item.email;
+                document.getElementById('usr-role').value = item.role;
+                document.getElementById('usr-pass').value = '';
+                dialog.showModal();
+            }
+        }
+
+        function closeUserModal() {
+            var dialog = document.getElementById('user-modal');
+            if (dialog) dialog.close();
+        }
+
+        async function handleUserSubmit(e) {
+            e.preventDefault();
+            var payload = {
+                uid: parseInt(document.getElementById('usr-uid').value),
+                hoTen: document.getElementById('usr-fullname').value,
+                email: document.getElementById('usr-email').value,
+                role: document.getElementById('usr-role').value,
+                matKhauMoi: document.getElementById('usr-pass').value
+            };
+            var json = await send('/Admin/UpdateUser', payload, true);
+            if (json.success) { closeUserModal(); loadAdminUsers(); }
+            report(json);
+        }
+
+        /* ---------- 10. Cài đặt ---------- */
+        function loadAdminSettings() {
+            return loadList({
+                tbodyId: 'tbl-settings-tbody', cols: 3, url: '/Admin/GetSettings', retry: 'loadAdminSettings',
+                empty: 'Dùng biểu mẫu phía trên để thêm khóa cấu hình đầu tiên.',
+                row: function (s) {
+                    return '<tr>' +
+                        '<td><span class="keycap">' + esc(s.settingKey) + '</span></td>' +
+                        '<td><div class="clamp" title="' + esc(s.settingContent) + '">' + esc(s.settingContent) + '</div></td>' +
+                        '<td class="nowrap cell-sub">' + new Date(s.createDate).toLocaleDateString('vi-VN') + '</td>' +
+                        '</tr>';
+                }
+            });
+        }
+
+        async function handleSaveSettingSubmit(e) {
+            e.preventDefault();
+            var payload = {
+                settingKey: document.getElementById('set-key').value.trim(),
+                settingContent: document.getElementById('set-content').value.trim()
+            };
+            var json = await send('/Admin/SaveSetting', payload, true);
+            if (json.success) loadAdminSettings();
+            report(json);
+        }
+    </script>
+}

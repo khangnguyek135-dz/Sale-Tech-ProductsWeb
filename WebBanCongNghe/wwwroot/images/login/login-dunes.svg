@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="96" viewBox="0 0 1440 96" preserveAspectRatio="none">
+  <!-- đồi cát phía sau -->
+  <path d="M0 40 C200 14 420 60 700 38 C960 18 1180 52 1440 28 L1440 96 L0 96 Z" fill="#1A0D33" fill-opacity=".45"/>
+  <!-- đồi cát phía trước = màu nền trang (ivory) -->
+  <path d="M0 70 C240 44 460 92 760 66 C1020 46 1220 78 1440 58 L1440 97 L0 97 Z" fill="#F7F2E9"/>
+  <path d="M0 70 C240 44 460 92 760 66 C1020 46 1220 78 1440 58" fill="none" stroke="#D8AD61" stroke-opacity=".7" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+</svg>

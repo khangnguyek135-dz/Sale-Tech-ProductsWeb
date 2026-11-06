@@ -1,0 +1,334 @@
+﻿@using System.Security.Claims
+<!doctype html>
+<html lang="vi" class="no-js dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>CyberBoard Ultra 75% – CyberCraft Labs | Đặt trước bàn phím cơ Custom</title>
+    <meta name="description" content="CyberBoard Ultra 75% từ CyberCraft Labs – Bàn phím cơ Custom khung nhôm CNC 6063 nguyên khối 2.2kg, cấu trúc Gasket Mount 5 lớp tiêu âm, màn hình OLED thông minh và kết nối 3 chế độ 1ms.">
+    <meta name="theme-color" content="#020617">
+
+    <link rel="icon" href="~/images/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+            @@theme {
+                --color-midnight: #090D16;
+                --color-royal: #1E293B;
+                --color-antique-gold: #22D3EE;
+                --color-champagne: #67E8F9;
+                --color-ivory: #F8FAFC;
+                --color-sand: #E2E8F0;
+                --color-terracotta: #F59E0B;
+                --color-ink: #0F172A;
+                --color-bronze: #06B6D4;
+                --color-footer: #020617;
+                --font-display: "Be Vietnam Pro", system-ui, sans-serif;
+                --font-body: "Be Vietnam Pro", system-ui, sans-serif;
+            }
+    </style>
+
+    <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+    <script src="~/lib/sweetalert2/sweetalert2.min.js" defer></script>
+</head>
+
+<body class="font-body bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-slate-950">
+    <a href="#main" class="skip-link">Bỏ qua đến nội dung chính</a>
+
+    @Html.AntiForgeryToken()
+
+    <!-- ===================== HEADER ===================== -->
+    <header id="site-header" class="site-header sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md text-slate-100">
+        <div class="container-site flex h-[76px] items-center justify-between gap-3">
+            <a href="#gioi-thieu" class="flex items-center gap-3 shrink-0 group" aria-label="CyberBoard Ultra – về đầu trang">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-500/40 bg-slate-900 text-cyan-400 shadow-sm shadow-cyan-500/10 transition group-hover:border-cyan-400">
+                    <i class="fa-solid fa-keyboard text-lg" aria-hidden="true"></i>
+                </div>
+                <div class="leading-tight max-[379px]:hidden">
+                    <span class="font-display block text-lg font-extrabold tracking-wide text-white">CYBERBOARD <span class="text-cyan-400">75%</span></span>
+                    <span class="block text-[10px] font-mono uppercase tracking-widest text-slate-400" data-store="name">CyberCraft Labs</span>
+                </div>
+            </a>
+
+            <nav aria-label="Điều hướng chính" class="hidden lg:block">
+                <ul class="flex items-center gap-7 text-sm font-medium text-slate-300">
+                    <li><a class="nav-link hover:text-cyan-400 transition" href="#gioi-thieu">Giới thiệu</a></li>
+                    <li><a class="nav-link hover:text-cyan-400 transition" href="#thuong-hieu">Công nghệ CNC</a></li>
+                    <li><a class="nav-link hover:text-cyan-400 transition" href="#truyen-thong">Sound Test &amp; Review</a></li>
+                    <li><a class="nav-link hover:text-cyan-400 transition" href="#tren-tay">Bóc tách linh kiện</a></li>
+                    <li><a class="nav-link hover:text-cyan-400 transition" href="#danh-gia">Đánh giá &amp; FAQ</a></li>
+                </ul>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <button type="button" onclick="openProfileModal()" class="flex items-center gap-2 rounded-xl border border-cyan-500/40 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:border-cyan-400 transition">
+                        <i class="fa-solid fa-user-gear text-cyan-400"></i>
+                        <span>@User.Identity.Name</span>
+                    </button>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                        <button type="submit" class="icon-btn text-xs hover:text-red-400" title="Đăng xuất">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <button type="button" onclick="openAuthModal('login')" class="btn btn-royal btn-sm border border-cyan-500/30 hover:border-cyan-400">
+                        <i class="fa-solid fa-user-lock" aria-hidden="true"></i>
+                        <span class="hidden sm:inline">Đăng Nhập</span>
+                    </button>
+                }
+
+                <button type="button" data-open-order class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                    <span>Đặt Trước Ngay</span>
+                </button>
+                <button type="button" id="nav-toggle" class="icon-btn lg:hidden" aria-expanded="false" aria-controls="mobile-nav" aria-label="Mở menu">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    @RenderBody()
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer border-t border-slate-800/80 bg-slate-950 text-slate-400 pb-28 md:pb-0">
+        <div class="container-site grid grid-cols-2 gap-x-8 gap-y-10 py-16 lg:grid-cols-[1.6fr_1fr_1fr] lg:gap-12">
+            <div class="col-span-2 lg:col-span-1">
+                <a href="#gioi-thieu" class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-500/40 bg-slate-900 text-cyan-400">
+                        <i class="fa-solid fa-keyboard text-lg" aria-hidden="true"></i>
+                    </div>
+                    <span class="font-display text-xl font-bold text-white" data-store="name">CyberCraft Labs</span>
+                </a>
+                <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-400" data-store="about">
+                    Xưởng chế tác bàn phím cơ Custom CNC độ chính xác cao. Thiết kế tối ưu âm học Gasket Mount &amp; trải nghiệm gõ chuyên nghiệp.
+                </p>
+                <ul class="mt-5 space-y-1.5 text-sm text-slate-300" id="footer-contact" aria-label="Thông tin liên hệ"></ul>
+                <div class="mt-6 flex gap-3" id="footer-social"></div>
+            </div>
+
+            <div>
+                <h3 class="font-display text-sm font-bold uppercase tracking-wider text-white mb-4">Khám phá sản phẩm</h3>
+                <ul class="space-y-2.5 text-sm">
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#gioi-thieu">Thông tin Pre-Order</a></li>
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#thuong-hieu">Cơ khí CNC &amp; Thông số</a></li>
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#truyen-thong">Video Review &amp; Sound Test</a></li>
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#tren-tay">Bóc tách linh kiện</a></li>
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#danh-gia">Đánh giá &amp; Hỏi đáp (FAQ)</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="font-display text-sm font-bold uppercase tracking-wider text-white mb-4">Chính sách Pre-Order</h3>
+                <ul class="space-y-2.5 text-sm">
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#danh-gia">Chính sách đặt cọc &amp; giữ suất</a></li>
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#danh-gia">Bảo hành 12 tháng 1 đổi 1</a></li>
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#danh-gia">Vận chuyển bảo hiểm toàn quốc</a></li>
+                    <li><a class="footer-link hover:text-cyan-400 transition" href="#danh-gia">Hướng dẫn thanh toán QR</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-800/80">
+            <div class="container-site flex flex-col items-center justify-between gap-2 py-6 text-center text-xs text-slate-500 sm:flex-row sm:text-left">
+                <p>© <span data-year></span> <span data-store="name">CyberCraft Labs</span>. Bảo lưu mọi quyền.</p>
+                <p>CyberBoard Ultra 75% – Custom CNC Mechanical Keyboard.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===================== MODAL AUTH (ĐĂNG NHẬP / ĐĂNG KÝ / QUÊN MẬT KHẨU) ===================== -->
+    <dialog id="auth-dialog" class="lightbox-dialog">
+        <div class="glass-panel mx-auto w-[92vw] max-w-md p-6 border border-cyan-500/40 bg-slate-950/95 shadow-2xl relative">
+            <button type="button" onclick="closeAuthModal()" class="icon-btn absolute top-4 right-4" aria-label="Đóng popup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- FORM ĐĂNG NHẬP -->
+            <div id="auth-form-login">
+                <span class="text-[11px] font-bold uppercase tracking-widest text-cyan-400 block"><i class="fa-solid fa-shield-halved mr-1"></i>CyberCraft Security</span>
+                <h3 class="mt-1 text-xl font-bold text-white">Đăng Nhập Tài Khoản</h3>
+
+                <form id="form-login" class="mt-5 space-y-4" onsubmit="handleLoginSubmit(event)">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email <span class="text-cyan-400 text-[10px]">(Tự động xóa khoảng trống)</span></label>
+                        <input type="text" id="login-email" required placeholder="name@gmail.com" class="form-control">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Mật khẩu</label>
+                        <input type="password" id="login-password" required placeholder="••••••••" class="form-control">
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                            <input type="checkbox" id="login-remember" class="rounded border-slate-700 bg-slate-900 text-cyan-400">
+                            <span>Ghi nhớ 7 ngày</span>
+                        </label>
+                        <button type="button" onclick="switchAuthTab('forgot')" class="text-cyan-400 hover:underline">Quên mật khẩu?</button>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full justify-center">
+                        <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+                    </button>
+                </form>
+                <p class="mt-4 text-center text-xs text-slate-400">Chưa có tài khoản? <button type="button" onclick="switchAuthTab('register')" class="text-cyan-400 font-semibold hover:underline">Đăng ký ngay</button></p>
+            </div>
+
+            <!-- FORM ĐĂNG KÝ -->
+            <div id="auth-form-register" hidden>
+                <span class="text-[11px] font-bold uppercase tracking-widest text-cyan-400 block"><i class="fa-solid fa-user-plus mr-1"></i>Tạo tài khoản mới</span>
+                <h3 class="mt-1 text-xl font-bold text-white">Đăng Ký Thành Viên</h3>
+
+                <form id="form-register" class="mt-4 space-y-3" onsubmit="handleRegisterSubmit(event)">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Họ và tên *</label>
+                        <input type="text" id="reg-fullname" required placeholder="Nguyễn Văn A" class="form-control">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email Google / Khác *</label>
+                        <input type="text" id="reg-email" required placeholder="example@gmail.com" class="form-control">
+                        <p class="text-[10px] text-amber-400 mt-1">Tự động bắt lỗi: .con, ..com, dư @@...</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Mật khẩu *</label>
+                        <input type="password" id="reg-password" required placeholder="Tối thiểu 6 ký tự" class="form-control">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Xác nhận mật khẩu *</label>
+                        <input type="password" id="reg-confirm-password" required placeholder="Nhập lại mật khẩu" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full justify-center">
+                        <i class="fa-solid fa-check-circle"></i> Đăng Ký Tài Khoản
+                    </button>
+                </form>
+                <p class="mt-4 text-center text-xs text-slate-400">Đã có tài khoản? <button type="button" onclick="switchAuthTab('login')" class="text-cyan-400 font-semibold hover:underline">Đăng nhập ngay</button></p>
+            </div>
+
+            <!-- FORM QUÊN MẬT KHẨU -->
+            <div id="auth-form-forgot" hidden>
+                <span class="text-[11px] font-bold uppercase tracking-widest text-cyan-400 block"><i class="fa-solid fa-key mr-1"></i>Khôi phục truy cập</span>
+                <h3 class="mt-1 text-xl font-bold text-white">Quên Mật Khẩu</h3>
+                <p class="mt-1 text-xs text-slate-300">Nhập đúng địa chỉ Gmail đã đăng ký để cấp lại mật khẩu.</p>
+
+                <form id="form-forgot" class="mt-4 space-y-4" onsubmit="handleForgotSubmit(event)">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email đã đăng ký</label>
+                        <input type="text" id="forgot-email" required placeholder="name@gmail.com" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full justify-center">
+                        <i class="fa-solid fa-paper-plane"></i> Gửi Yêu Cầu
+                    </button>
+                </form>
+                <p class="mt-4 text-center text-xs text-slate-400"><button type="button" onclick="switchAuthTab('login')" class="text-cyan-400 font-semibold hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i>Quay lại đăng nhập</button></p>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- ===================== MODAL HỒ SƠ TÀI KHOẢN & LỊCH SỬ ĐẶT HÀNG ===================== -->
+    <dialog id="profile-dialog" class="lightbox-dialog">
+        <div class="glass-panel mx-auto w-[95vw] max-w-4xl p-6 border border-cyan-500/40 bg-slate-950/95 shadow-2xl relative">
+            <button type="button" onclick="closeProfileModal()" class="icon-btn absolute top-4 right-4" aria-label="Đóng popup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3 pb-4 border-b border-slate-800">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-400/40">
+                    <i class="fa-solid fa-id-card text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Quản Lý Tài Khoản &amp; Đơn Hàng</h3>
+                    <span class="text-xs text-slate-400">Email: <strong class="text-cyan-300">@User.FindFirstValue(ClaimTypes.Email)</strong></span>
+                </div>
+            </div>
+
+            <div class="mt-4 flex gap-3 border-b border-slate-800 pb-2">
+                <button type="button" id="tab-btn-orders" onclick="switchProfileTab('orders')" class="px-4 py-2 text-xs font-bold rounded-lg bg-cyan-400 text-slate-950 transition">
+                    <i class="fa-solid fa-box-archive mr-1.5"></i>Lịch Sử Đặt Hàng
+                </button>
+                <button type="button" id="tab-btn-info" onclick="switchProfileTab('info')" class="px-4 py-2 text-xs font-bold rounded-lg border border-slate-700 bg-slate-900 text-slate-300 hover:border-cyan-400 transition">
+                    <i class="fa-solid fa-user-pen mr-1.5"></i>Thay Đổi Thông Tin &amp; Mật Khẩu
+                </button>
+            </div>
+
+            <!-- TAB 1: LỊCH SỬ ĐẶT HÀNG TỪ BẢNG DonDatHang -->
+            <div id="profile-tab-orders" class="mt-4">
+                <div class="overflow-x-auto max-h-[50vh]">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900 text-slate-400 uppercase font-mono sticky top-0 border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Mã đơn</th>
+                                <th class="p-3">Thời gian đặt</th>
+                                <th class="p-3">Số lượng</th>
+                                <th class="p-3">Tổng tiền</th>
+                                <th class="p-3">Thanh toán</th>
+                                <th class="p-3">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-history-tbody" class="divide-y divide-slate-800/60">
+                            <!-- Render tự động bởi JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: CẬP NHẬT THÔNG TIN TÀI KHOẢN (TRỪ ROLE) -->
+            <div id="profile-tab-info" class="mt-4" hidden>
+                <form id="form-update-profile" class="grid gap-4 sm:grid-cols-2" onsubmit="handleUpdateProfileSubmit(event)">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Họ và tên *</label>
+                        <input type="text" id="up-fullname" required value="@User.Identity?.Name" class="form-control">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email tài khoản *</label>
+                        <input type="text" id="up-email" required value="@User.FindFirstValue(ClaimTypes.Email)" class="form-control">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Quyền Hạn (Role)</label>
+                        <input type="text" disabled value="@User.FindFirstValue(ClaimTypes.Role)" class="form-control opacity-60 cursor-not-allowed bg-slate-900">
+                        <span class="text-[10px] text-slate-400">* Quyền Role không được phép thay đổi</span>
+                    </div>
+
+                    <div class="sm:col-span-2 pt-3 border-t border-slate-800/80">
+                        <h4 class="text-xs font-bold text-cyan-400 mb-3"><i class="fa-solid fa-lock mr-1"></i>Đổi Mật Khẩu (Để trống nếu giữ nguyên)</h4>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Mật khẩu hiện tại</label>
+                        <input type="password" id="up-curr-pass" placeholder="••••••••" class="form-control">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Mật khẩu mới</label>
+                        <input type="password" id="up-new-pass" placeholder="Tối thiểu 6 ký tự" class="form-control">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Xác nhận mật khẩu mới</label>
+                        <input type="password" id="up-confirm-pass" placeholder="Nhập lại mật khẩu mới" class="form-control">
+                    </div>
+
+                    <div class="sm:col-span-2 flex justify-end gap-3 mt-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu Thay Đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    @RenderSection("Scripts", required: false)
+
+    <script src="~/js/navigation.js" asp-append-version="true" defer></script>
+    <script src="~/js/media.js" asp-append-version="true" defer></script>
+    <script src="~/js/reviews.js" asp-append-version="true" defer></script>
+    <script src="~/js/main.js" asp-append-version="true" defer></script>
+</body>
+</html>

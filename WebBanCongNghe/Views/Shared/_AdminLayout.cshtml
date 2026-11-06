@@ -1,0 +1,184 @@
+﻿@{
+    var displayName = User.Identity?.Name ?? "Admin";
+    // Tên Việt: lấy chữ cái đầu của tên gọi (từ cuối) làm avatar, không phụ thuộc ảnh ngoài
+    var initial = char.ToUpperInvariant(
+        displayName.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.FirstOrDefault() ?? 'A');
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản trị | CyberCraft Labs</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+    <script src="~/lib/sweetalert2/sweetalert2.min.js" defer></script>
+</head>
+<body>
+    <a href="#admin-content" class="skip-link">Bỏ qua đến nội dung</a>
+    @Html.AntiForgeryToken()
+
+    <aside id="admin-sidebar" class="sidebar">
+        <div class="sidebar-head">
+            <div class="sidebar-brand">
+                <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-keyboard"></i></span>
+                <div class="sidebar-brand__text">
+                    <span class="sidebar-brand__name">CyberCraft</span>
+                    <span class="sidebar-brand__sub">Quản trị</span>
+                </div>
+            </div>
+            <button type="button" id="btn-toggle-sidebar" class="sidebar-collapse" aria-label="Thu gọn thanh bên">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Điều hướng quản trị">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <button type="button" class="nav-link is-active" onclick="switchAdminTab('dashboard', this)">
+                        <i class="fa-solid fa-chart-line nav-icon"></i>
+                        <span class="nav-label">Thống kê</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="nav-section">Bán hàng</div>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <button type="button" class="nav-link" onclick="switchAdminTab('orders', this)">
+                        <i class="fa-solid fa-box-archive nav-icon"></i>
+                        <span class="nav-label">Đơn đặt hàng</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link" onclick="switchAdminTab('statuses', this)">
+                        <i class="fa-solid fa-list-check nav-icon"></i>
+                        <span class="nav-label">Trạng thái đơn</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="nav-section">Sản phẩm</div>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <button type="button" class="nav-link" onclick="switchAdminTab('devices', this)">
+                        <i class="fa-solid fa-microchip nav-icon"></i>
+                        <span class="nav-label">Thiết bị</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link" onclick="switchAdminTab('brands', this)">
+                        <i class="fa-solid fa-copyright nav-icon"></i>
+                        <span class="nav-label">Thương hiệu</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link" onclick="switchAdminTab('reviews', this)">
+                        <i class="fa-solid fa-star nav-icon"></i>
+                        <span class="nav-label">Đánh giá</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="nav-section">Hệ thống</div>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <button type="button" class="nav-link" onclick="switchAdminTab('users', this)">
+                        <i class="fa-solid fa-users-gear nav-icon"></i>
+                        <span class="nav-label">Tài khoản</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link" onclick="switchAdminTab('settings', this)">
+                        <i class="fa-solid fa-sliders nav-icon"></i>
+                        <span class="nav-label">Cài đặt</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-foot">
+            <a href="/" class="nav-link">
+                <i class="fa-solid fa-arrow-up-right-from-square nav-icon"></i>
+                <span class="nav-label">Xem trang chủ web</span>
+            </a>
+        </div>
+    </aside>
+    <div id="sidebar-scrim" class="sidebar-scrim"></div>
+
+    <div class="admin-main">
+        <header class="topbar">
+            <button type="button" id="btn-mobile-menu" class="icon-btn topbar-menu" aria-label="Mở menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="topbar-title">
+                <ul class="breadcrumb">
+                    <li><a href="/Admin">Admin</a></li>
+                    <li id="admin-breadcrumb-active">Tổng quan</li>
+                </ul>
+                <h1 id="admin-page-title" class="topbar-heading">Tổng quan</h1>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="profile">
+                    <button type="button" id="btn-profile-toggle" class="profile-btn" aria-expanded="false" aria-haspopup="true">
+                        <span class="profile-btn__avatar" aria-hidden="true">@initial</span>
+                        <span class="profile-btn__text">
+                            <span class="profile-btn__name">@displayName</span>
+                            <span class="profile-btn__role">Quản trị viên</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down profile-btn__caret" aria-hidden="true"></i>
+                    </button>
+                    <div id="admin-profile-menu" class="profile-menu" hidden>
+                        <div class="profile-menu__head">
+                            <p class="profile-menu__name">@displayName</p>
+                            <p class="profile-menu__email">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</p>
+                        </div>
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="profile-menu__item profile-menu__item--danger">
+                                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="admin-content" class="content" tabindex="-1">
+            @RenderBody()
+        </main>
+
+        <footer class="admin-footer">
+            <p>© 2026 CyberCraft Labs. Trang quản trị nội bộ.</p>
+        </footer>
+    </div>
+
+    <script>
+            // Menu di động: thanh bên trượt ra từ trái, bấm nền mờ hoặc chọn mục để đóng
+            (function () {
+                var btn = document.getElementById('btn-mobile-menu');
+                var scrim = document.getElementById('sidebar-scrim');
+                var nav = document.getElementById('admin-sidebar');
+                function setOpen(open) {
+                    if (open) document.body.classList.remove('sidebar-collapsed'); // trạng thái thu gọn của desktop không áp dụng cho menu trượt
+                    document.body.classList.toggle('sidebar-open', open);
+                }
+                if (btn) btn.addEventListener('click', function () { setOpen(!document.body.classList.contains('sidebar-open')); });
+                if (scrim) scrim.addEventListener('click', function () { setOpen(false); });
+                if (nav) nav.addEventListener('click', function (e) { if (e.target.closest('.nav-link')) setOpen(false); });
+                document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+            })();
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

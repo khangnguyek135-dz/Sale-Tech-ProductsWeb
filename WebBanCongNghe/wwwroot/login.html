@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Đăng nhập quản trị | Nhà Giả Kim</title>
+  <meta name="description" content="Trang đăng nhập dành cho quản trị viên Nhà Giả Kim.">
+  <meta name="theme-color" content="#21123D">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" href="images/login/login-logo.svg" type="image/svg+xml">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <!-- CSS riêng của trang đăng nhập (không dùng chung với landing page) -->
+  <link rel="stylesheet" href="css/login.css">
+
+  <script src="js/login.js" defer></script>
+</head>
+
+<body class="login-body">
+  <a href="#login-form" class="skip-link">Bỏ qua đến form đăng nhập</a>
+
+  <div class="login-shell">
+
+    <!-- ===================== PANEL TRANG TRÍ ===================== -->
+    <aside class="login-art" aria-hidden="true">
+      <div class="login-art__inner">
+        <a href="index.html" class="login-brand" tabindex="-1">
+          <img src="images/login/login-logo.svg" width="40" height="40" alt="">
+          <span>Nhà Giả Kim</span>
+        </a>
+
+        <img class="login-art__img" src="images/login/login-illustration.svg" width="480" height="400" alt="">
+
+        <div class="login-art__copy">
+          <p class="eyebrow">Tác phẩm của Paulo Coelho</p>
+          <blockquote class="login-quote">
+            “Khi bạn khao khát một điều gì, cả vũ trụ sẽ hợp lực giúp bạn đạt được điều đó.”
+          </blockquote>
+          <p class="login-quote__cite">— Trích <cite>Nhà Giả Kim</cite></p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================== FORM ===================== -->
+    <main class="login-main">
+      <div class="login-topbar">
+        <a href="index.html" class="login-brand login-brand--mobile">
+          <img src="images/login/login-logo.svg" width="36" height="36" alt="">
+          <span>Nhà Giả Kim</span>
+        </a>
+        <a href="index.html" class="login-back">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Về trang chủ
+        </a>
+      </div>
+
+      <section class="login-card" aria-labelledby="login-title">
+        <h1 id="login-title" class="login-title">Đăng nhập quản trị</h1>
+        <p class="login-lead">Khu vực dành riêng cho quản trị viên để quản lý đơn hàng và nội dung trang.</p>
+
+        <form id="login-form" class="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="f-identifier">Email hoặc số điện thoại <span class="req" aria-hidden="true">*</span></label>
+            <div class="input-wrap">
+              <i class="fa-regular fa-user input-icon" aria-hidden="true"></i>
+              <input id="f-identifier" name="identifier" type="text" class="form-control" autocomplete="username"
+                     inputmode="email" maxlength="100" required aria-describedby="e-identifier"
+                     placeholder="ban@email.com hoặc 09xx xxx xxx">
+            </div>
+            <p id="e-identifier" class="field-error"></p>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label class="form-label" for="f-password">Mật khẩu <span class="req" aria-hidden="true">*</span></label>
+              <!-- TODO: trỏ tới trang quên mật khẩu thật -->
+              <a href="#" class="text-link text-link--sm">Quên mật khẩu?</a>
+            </div>
+            <div class="input-wrap">
+              <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+              <input id="f-password" name="password" type="password" class="form-control form-control--toggle"
+                     autocomplete="current-password" maxlength="128" required
+                     aria-describedby="e-password h-capslock" placeholder="Nhập mật khẩu">
+              <button type="button" class="pw-toggle" data-pw-toggle aria-controls="f-password"
+                      aria-pressed="false" aria-label="Hiện mật khẩu">
+                <i class="fa-regular fa-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <p id="h-capslock" class="field-hint field-hint--warn" hidden>
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Caps Lock đang bật
+            </p>
+            <p id="e-password" class="field-error"></p>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" name="remember" value="1">
+            <span class="check__box" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+            <span>Ghi nhớ đăng nhập trên thiết bị này</span>
+          </label>
+
+          <div id="login-status" class="form-status" role="alert"></div>
+
+          <button type="submit" class="btn btn-primary btn-block" data-submit>
+            <span data-submit-label>Đăng nhập</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+      </section>
+
+      <p class="login-footer">© <span data-year></span> Nhà Giả Kim – Paulo Coelho</p>
+    </main>
+  </div>
+</body>
+</html>

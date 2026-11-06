@@ -1,0 +1,14 @@
+namespace WebBanCongNghe.Models.Requests
+{
+    public class DatHangRequest
+    {
+        public int UidThietBi { get; set; }
+        public int SoLuong { get; set; } = 1;
+        public string TenKhachHang { get; set; } = string.Empty;
+        public string SDT { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string DiaChi { get; set; } = string.Empty;
+        public string MaHinhThucThanhToan { get; set; } = string.Empty;
+        public string? GhiChu { get; set; }
+    }
+}

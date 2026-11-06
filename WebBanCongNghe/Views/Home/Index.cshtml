@@ -1,0 +1,1208 @@
+﻿@using System.Text.Json
+@using WebBanCongNghe.Models.Entities
+@{
+    var gadget = ViewData["Gadget"] as ThongTinThietBi;
+    var brand = ViewData["Brand"] as ThuongHieu;
+    var reviews = ViewData["Reviews"] as List<DanhGia> ?? new List<DanhGia>();
+
+    string? youtubeId = null;
+    if (Uri.TryCreate(gadget?.LinkYoutubeReview, UriKind.Absolute, out var ytUri))
+    {
+        youtubeId = System.Web.HttpUtility.ParseQueryString(ytUri.Query)["v"]
+                    ?? ytUri.Segments.LastOrDefault()?.Trim('/');
+    }
+    var userEmail = User.FindFirstValue(ClaimTypes.Email) ?? "";
+    var userName = User.Identity?.Name ?? "";
+    var brandName = !string.IsNullOrWhiteSpace(brand?.TenThuongHieu) ? brand.TenThuongHieu : "CyberCraft Labs";
+    var heroTitle = !string.IsNullOrWhiteSpace(gadget?.TieuDeChinh) ? gadget.TieuDeChinh : "CYBERBOARD ULTRA 75%";
+    var heroSub = !string.IsNullOrWhiteSpace(gadget?.TieuDePhu)
+        ? gadget.TieuDePhu
+        : "Bàn phím cơ Custom khung nhôm CNC 6063 nguyên khối 2.2kg, cấu trúc Gasket Mount 5 lớp tiêu âm, màn hình OLED thông minh và kết nối 3 chế độ 1ms.";
+    var heroImg = !string.IsNullOrWhiteSpace(gadget?.AnhThietBi)
+    ? gadget.AnhThietBi
+    : "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=1200&q=85";
+
+    var serverData = new
+    {
+        gadgetUid = gadget?.Uid ?? 1,
+        price = gadget?.GiaDatTruoc ?? 5200000,
+        youtubeId = youtubeId ?? "fC7oUOUEEi4",
+        reviews = reviews.Select(r => new { name = r.HoTen, rating = r.SoSao, content = r.NoiDungDanhGia, avatar = r.AnhDaiDien })
+    };
+}
+
+<script>
+    window.NGK = window.NGK || {};
+    window.NGK.server = @Html.Raw(JsonSerializer.Serialize(serverData));
+</script>
+
+<main id="main" class="tech-main">
+
+    <!-- ===================== SECTION 1: HERO SECTION ===================== -->
+    <section id="gioi-thieu" class="hero relative overflow-hidden" aria-labelledby="hero-title">
+        <div class="hero-grid-bg" aria-hidden="true"></div>
+        <div class="container-site relative z-10 grid items-center gap-10 pb-20 pt-10 md:pb-28 lg:grid-cols-[1.12fr_.88fr] lg:gap-12 lg:pt-16">
+
+            <!-- Cột trái: Thông tin Pre-order & Bộ chọn phiên bản -->
+            <div class="text-left">
+                <div class="inline-flex flex-wrap items-center gap-3">
+                    <span class="badge-cyber">
+                        <span class="pulse-dot" aria-hidden="true"></span>
+                        PRE-ORDER BATCH 01
+                    </span>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-cyan-400">
+                        Độc quyền từ @brandName
+                    </span>
+                </div>
+
+                <h1 id="hero-title" class="hero-title mt-4">
+                    @heroTitle
+                </h1>
+
+                <div class="mt-4 max-w-[56ch] text-base leading-relaxed text-slate-300">
+                    @Html.Raw(heroSub)
+                </div>
+
+                <!-- Khung Đếm Ngược & Tiến Độ Suất Ưu Đãi -->
+                <div class="glass-panel mt-6 p-4 sm:p-5">
+                    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-400">
+                                <i class="fa-regular fa-clock mr-1.5" aria-hidden="true"></i>Thời gian kết thúc ưu đãi đặt cọc:
+                            </p>
+                            <div id="preorder-countdown" class="mt-2 flex items-center gap-2" aria-live="polite">
+                                <div class="countdown-box"><span data-cd="days">03</span><small>Ngày</small></div>
+                                <span class="text-cyan-400 font-bold">:</span>
+                                <div class="countdown-box"><span data-cd="hours">14</span><small>Giờ</small></div>
+                                <span class="text-cyan-400 font-bold">:</span>
+                                <div class="countdown-box"><span data-cd="minutes">45</span><small>Phút</small></div>
+                                <span class="text-cyan-400 font-bold">:</span>
+                                <div class="countdown-box"><span data-cd="seconds">20</span><small>Giây</small></div>
+                            </div>
+                        </div>
+
+                        <div class="sm:text-right">
+                            <span class="text-xs text-slate-400">Giá niêm yết: <del class="text-slate-500" data-original-price>6.500.000đ</del></span>
+                            <div class="text-2xl font-extrabold text-cyan-400" data-price>5.200.000đ</div>
+                            <span class="inline-block rounded bg-amber-500/15 px-2 py-0.5 text-xs font-semibold text-amber-400 border border-amber-500/30">
+                                Đặt cọc giữ suất chỉ <strong data-deposit-amount>1.000.000đ</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Thanh tiến độ số suất còn lại -->
+                    <div class="mt-4 pt-3 border-t border-slate-700/60">
+                        <div class="flex items-center justify-between text-xs font-medium">
+                            <span class="text-slate-200">
+                                <i class="fa-solid fa-fire text-amber-400 mr-1" aria-hidden="true"></i>
+                                Đã đăng ký <strong class="text-cyan-400" data-slot-claimed>78</strong>/<span data-slot-total>100</span> suất
+                            </span>
+                            <span class="text-amber-400 font-semibold" data-slot-remaining-text>Chỉ còn 22 suất ưu đãi</span>
+                        </div>
+                        <div class="progress-track mt-2" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">
+                            <div id="slot-progress-bar" class="progress-fill" style="width: 78%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bộ chọn phiên bản nhanh (Variant Selector) -->
+                <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                    <!-- Chọn màu vỏ -->
+                    <div class="glass-panel p-3.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-semibold uppercase tracking-wider text-slate-400">1. Màu vỏ CNC:</span>
+                            <strong id="hero-selected-color-label" class="text-cyan-300">Anodized Cyber Purple</strong>
+                        </div>
+                        <div id="hero-color-selector" class="mt-2.5 flex flex-wrap gap-2" role="radiogroup" aria-label="Chọn màu vỏ bàn phím">
+                            <button type="button" class="variant-chip is-active" data-variant-color="cyber-purple" data-label="Anodized Cyber Purple" aria-checked="true" role="radio">
+                                <span class="swatch bg-purple-600 border-purple-300"></span>
+                                <span>Cyber Purple</span>
+                            </button>
+                            <button type="button" class="variant-chip" data-variant-color="space-gray" data-label="Space Gray" aria-checked="false" role="radio">
+                                <span class="swatch bg-slate-600 border-slate-300"></span>
+                                <span>Space Gray</span>
+                            </button>
+                            <button type="button" class="variant-chip" data-variant-color="e-white" data-label="E-White" aria-checked="false" role="radio">
+                                <span class="swatch bg-slate-100 border-white"></span>
+                                <span>E-White</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chọn loại Switch -->
+                    <div class="glass-panel p-3.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-semibold uppercase tracking-wider text-slate-400">2. Tuỳ chọn Switch:</span>
+                            <strong id="hero-selected-switch-label" class="text-cyan-300">Linear Silent</strong>
+                        </div>
+                        <div id="hero-switch-selector" class="mt-2.5 flex flex-wrap gap-2" role="radiogroup" aria-label="Chọn loại Switch">
+                            <button type="button" class="variant-chip is-active" data-variant-switch="linear-silent" data-label="Linear Silent (42g)" aria-checked="true" role="radio">
+                                <i class="fa-solid fa-wave-square text-cyan-400 text-xs" aria-hidden="true"></i>
+                                <span>Linear Silent</span>
+                            </button>
+                            <button type="button" class="variant-chip" data-variant-switch="tactile-thocky" data-label="Tactile Thocky (55g)" aria-checked="false" role="radio">
+                                <i class="fa-solid fa-sliders text-amber-400 text-xs" aria-hidden="true"></i>
+                                <span>Tactile Thocky</span>
+                            </button>
+                            <!-- NÚT BỔ SUNG: Clicky Crisp -->
+                            <button type="button" class="variant-chip" data-variant-switch="clicky-crisp" data-label="Clicky Crisp (50g)" aria-checked="false" role="radio">
+                                <i class="fa-solid fa-bolt text-purple-400 text-xs" aria-hidden="true"></i>
+                                <span>Clicky Crisp</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cụm nút CTA -->
+                <div class="mt-7 flex flex-col items-stretch gap-3.5 sm:flex-row sm:items-center">
+                    <button type="button" id="hero-cta" data-open-order class="btn btn-primary btn-lg">
+                        <span>Đặt Cọc Giữ Suất Ngay</span>
+                        <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                    </button>
+                    <a href="#truyen-thong" class="btn btn-outline-gold btn-lg">
+                        <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+                        <span>Nghe Sound Test</span>
+                    </a>
+                </div>
+
+                <ul class="hero-meta mt-6 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-300">
+                    <li><i class="fa-solid fa-microchip" aria-hidden="true"></i> Nhôm CNC 6063 nặng 2.2kg</li>
+                    <li><i class="fa-solid fa-truck-fast" aria-hidden="true"></i> Miễn phí vận chuyển toàn quốc</li>
+                    <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Bảo hành 12 tháng 1 đổi 1</li>
+                </ul>
+            </div>
+
+            <!-- Cột phải: Khung hiển thị thiết bị công nghệ 3D -->
+            <div class="gadget-stage">
+                <div class="gadget-glow" aria-hidden="true"></div>
+                <div class="gadget-float">
+                    <div class="gadget-3d" id="hero-gadget-card">
+                        <div class="gadget-hud-top">
+                            <span class="hud-tag"><i class="fa-solid fa-circle text-[8px] text-emerald-400 mr-1"></i>2.4GHz 1000Hz POLLING</span>
+                            <span class="hud-tag font-mono" id="hud-variant-badge">CYBER PURPLE // LINEAR</span>
+                        </div>
+                        <img id="hero-product-img"
+                             src="@heroImg"
+                             width="720" height="480"
+                             fetchpriority="high"
+                             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=1000&q=85';"
+                             alt="Bàn phím cơ Custom @heroTitle">
+                        <div class="gadget-rgb-bar" aria-hidden="true"></div>
+                        <div class="gadget-hud-bottom">
+                            <div>
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Cấu trúc âm học</span>
+                                <strong class="text-xs text-white">Gasket Mount · 5 Lớp Foam Poron</strong>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Dung lượng Pin</span>
+                                <strong class="text-xs text-cyan-400">4000mAh · OLED RGB</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gadget-shadow" aria-hidden="true"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SECTION 2: VỀ THƯƠNG HIỆU & CÔNG NGHỆ ===================== -->
+    <section id="thuong-hieu" class="section section-dark-alt" aria-labelledby="brand-title">
+        <div class="container-site">
+            <div class="grid items-center gap-12 lg:grid-cols-[5fr_7fr] lg:gap-16">
+                <!-- Khung minh họa Phòng Lab CNC / Kiến trúc cơ khí -->
+                <figure class="mx-auto w-full max-w-[480px] lg:max-w-none">
+                    <div class="cnc-lab-frame">
+                        <div class="cnc-lab-badge">
+                            <i class="fa-solid fa-gears text-cyan-400"></i>
+                            <span>CYBERCRAFT CNC LABS · ĐỘ CHÍNH XÁC 0.01MM</span>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=85"
+                             width="560" height="620" loading="lazy"
+                             class="aspect-[11/12] w-full object-cover rounded-xl"
+                             alt="Phòng nghiên cứu và gia công cơ khí CNC CyberCraft Labs">
+                        <figcaption class="mt-3 flex items-center justify-between text-xs text-slate-400 px-1">
+                            <span>Gia công phay CNC 5 trục từ phôi nhôm 6063-T6</span>
+                            <span class="font-mono text-cyan-400">QC PASS 100%</span>
+                        </figcaption>
+                    </div>
+                </figure>
+
+                <!-- Nội dung công nghệ & Bảng Tech Spec Grid -->
+                <div>
+                    <p class="eyebrow">Cơ khí chính xác &amp; Âm học Custom</p>
+                    <h2 id="brand-title" class="section-title mt-3 text-white">
+                        Chế Tác Từ Khối Nhôm Hàng Không Nguyên Bản
+                    </h2>
+                    <div class="mt-4 space-y-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+                        <p>
+                            Tại <strong>@brandName</strong>, mỗi chiếc <strong>CyberBoard Ultra</strong> trải qua 14 giờ phay CNC liên tục từ phôi nhôm 6063-T6 nguyên khối, tiếp nối bằng quy trình xử lý bề mặt Anodized hoặc phủ E-Coating chống oxy hóa và chống bám vân tay.
+                        </p>
+                        <p>
+                            Bo mạch PCB dày 1.2mm có rãnh Flex-cut từng phím kết hợp hệ thống đệm Silicone Gasket Mount giúp hấp thụ hoàn toàn chấn động kim loại, tạo nên độ nhún đồng đều và chất âm Thocky đặc trưng ngay khi xuất xưởng.
+                        </p>
+                    </div>
+
+                    <!-- Bảng chỉ số kỹ thuật nhanh (Tech Spec Grid) -->
+                    <div id="tech-spec-grid" class="mt-8 grid gap-4 sm:grid-cols-2">
+                        <div class="spec-card">
+                            <div class="spec-icon"><i class="fa-solid fa-cube" aria-hidden="true"></i></div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Vỏ Nhôm CNC 6063 Nguyên Khối</h3>
+                                <p class="mt-1 text-xs text-slate-300">Trọng lượng đầm chắc 2.2kg, bề mặt Anodized siêu mịn triệt tiêu hoàn toàn hiện tượng rung vỏ khi gõ nhanh.</p>
+                            </div>
+                        </div>
+
+                        <div class="spec-card">
+                            <div class="spec-icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Gasket Mount 5 Lớp Foam Tiêu Âm</h3>
+                                <p class="mt-1 text-xs text-slate-300">Tích hợp sẵn Poron Case, Poron Plate, IXPE Switch Pad, màng PET âm học và đệm đáy EPDM chống vang rỗng.</p>
+                            </div>
+                        </div>
+
+                        <div class="spec-card">
+                            <div class="spec-icon"><i class="fa-solid fa-microchip" aria-hidden="true"></i></div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Mạch Hotswap 5-Pin South-Facing</h3>
+                                <p class="mt-1 text-xs text-slate-300">Socket Kailh độ bền 10.000 lần thay nóng, mạch xuôi không cấn keycap Cherry cùng hệ thống LED RGB 16.8 triệu màu.</p>
+                            </div>
+                        </div>
+
+                        <div class="spec-card">
+                            <div class="spec-icon"><i class="fa-solid fa-wifi" aria-hidden="true"></i></div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Kết Nối 3 Chế Độ &amp; Pin 4000mAh</h3>
+                                <p class="mt-1 text-xs text-slate-300">Chuyển đổi tức thì giữa USB Type-C, Wireless 2.4GHz (độ trễ 1ms) và Bluetooth 5.2 đa thiết bị.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex flex-wrap items-center gap-4">
+                        <button type="button" data-open-order class="btn btn-primary">
+                            <span>Đặt Trước Phiên Bản Giới Hạn</span>
+                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                        <a href="#tren-tay" class="btn btn-royal">
+                            <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
+                            <span>Xem Bóc Tách Linh Kiện</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SECTION 3: VIDEO REVIEW & SOUND TEST ===================== -->
+    <!-- ===================== SECTION 3: VIDEO REVIEW & SOUND TEST ===================== -->
+    <section id="truyen-thong" class="section media-section relative overflow-hidden" aria-labelledby="media-title">
+        <div class="container-site relative z-10">
+            <header class="mx-auto max-w-3xl text-center">
+                <p class="eyebrow eyebrow--center">Kiểm chứng âm học &amp; Hiệu năng</p>
+                <h2 id="media-title" class="section-title mt-3 text-white">
+                    Video Sound Test Trực Tiếp 3 Loại Switch
+                </h2>
+                <p class="mt-3 text-sm sm:text-base text-slate-300">
+                    Bấm vào các nút chọn phía trên khung hình hoặc danh sách Switch bên phải để xem Video Sound Test tương ứng.
+                </p>
+            </header>
+
+            <div class="mt-10 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-stretch">
+                <!-- Khung Video có Nút chuyển Video trực tiếp -->
+                <article class="glass-panel p-4 sm:p-5 flex flex-col justify-between">
+                    <div>
+                        <!-- THANH NÚT CHUYỂN VIDEO TRỰC TIẾP -->
+                        <div class="mb-3 flex flex-wrap gap-2" id="video-tab-buttons">
+                            <button type="button" class="video-tab-btn active" data-switch-id="linear">
+                                <i class="fa-solid fa-play text-[10px] mr-1"></i> Video Linear Silent
+                            </button>
+                            <button type="button" class="video-tab-btn" data-switch-id="tactile">
+                                <i class="fa-solid fa-play text-[10px] mr-1"></i> Video Tactile Thocky
+                            </button>
+                            <button type="button" class="video-tab-btn" data-switch-id="clicky">
+                                <i class="fa-solid fa-play text-[10px] mr-1"></i> Video Clicky Crisp
+                            </button>
+                        </div>
+
+                        <div id="featured-video" class="video-frame aspect-video overflow-hidden rounded-xl border border-cyan-500/30"></div>
+                    </div>
+                    <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <h3 id="featured-video-title" class="text-base font-bold text-white">
+                            Sound Test Thực Tế: Linear Silent Switch (42g)
+                        </h3>
+                        <span class="text-xs text-slate-400 whitespace-nowrap">
+                            <i class="fa-solid fa-headphones mr-1 text-cyan-400"></i>Khuyên dùng tai nghe
+                        </span>
+                    </div>
+                </article>
+
+                <!-- Cột bên phải: Danh sách Switch nghe thử -->
+                <aside class="glass-panel p-5 sm:p-6 flex flex-col justify-between" aria-label="Trình nghe thử âm thanh Switch">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">
+                                <i class="fa-solid fa-wave-square mr-1.5"></i>Interactive Sound Lab
+                            </span>
+                            <span id="sound-status-badge" class="rounded-full bg-slate-800 px-2.5 py-0.5 text-[11px] font-mono text-slate-300 border border-slate-700">
+                                READY
+                            </span>
+                        </div>
+                        <h3 class="mt-2 text-lg font-bold text-white">Nghe Thử &amp; Xem Video 3 Hệ Switch</h3>
+                        <p class="mt-1 text-xs text-slate-300">
+                            Bấm vào thẻ bên dưới để phát Video Sound Test và mô phỏng âm thanh tương ứng.
+                        </p>
+
+                        <!-- Danh sách 3 loại Switch -->
+                        <div id="sound-switch-list" class="mt-4 space-y-2.5" role="radiogroup" aria-label="Chọn Switch nghe thử"></div>
+
+                        <!-- Biểu đồ sóng âm (Waveform Visualizer) -->
+                        <div class="sound-visualizer-box mt-4">
+                            <div id="sound-bars" class="sound-bars" aria-hidden="true">
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="mt-2 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                                <span id="sound-current-name">Linear Silent (42g)</span>
+                                <span id="sound-freq-info">Profile: Deep Thock · 180Hz-1.2kHz</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Điều khiển phát âm thanh & Phím gõ thử -->
+                    <div class="mt-5 pt-4 border-t border-slate-700/70">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button type="button" id="btn-play-sound-loop" class="btn btn-primary btn-sm flex-1">
+                                <i class="fa-solid fa-play" aria-hidden="true"></i>
+                                <span>Phát Chuỗi Gõ Thử (Typing Test)</span>
+                            </button>
+                            <button type="button" id="btn-open-kb-tester" class="btn btn-royal btn-sm border border-cyan-500/40 hover:border-cyan-400" title="Mở bộ test toàn bộ bàn phím">
+                                <i class="fa-solid fa-keyboard text-cyan-400" aria-hidden="true"></i>
+                                <span>Test Cả Bàn Phím</span>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SECTION 4: THƯ VIỆN CẬN CẢNH & BÓC TÁCH LINH KIỆN ===================== -->
+    <section id="tren-tay" class="section section-dark-alt" aria-labelledby="preview-title">
+        <div class="container-site">
+            <header class="mx-auto max-w-3xl text-center">
+                <p class="eyebrow eyebrow--center">Exploded View &amp; Gallery</p>
+                <h2 id="preview-title" class="section-title mt-3 text-white">
+                    Bóc Tách Cấu Trúc Linh Kiện &amp; Góc Cạnh Cận Cảnh
+                </h2>
+                <p class="mt-3 text-sm sm:text-base text-slate-300">
+                    Khám phá chi tiết từng lớp vật liệu bên trong CyberBoard Ultra. Bấm vào ảnh bất kỳ để mở chế độ phóng đại Lightbox độ phân giải cao.
+                </p>
+            </header>
+
+            <!-- Bộ Tab chọn góc nhìn linh kiện -->
+            <div id="gallery-tabs" class="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3" role="tablist" aria-label="Các phần linh kiện bàn phím">
+                <!-- Render tự động từ preview.js -->
+            </div>
+
+            <!-- Khung hiển thị chính của Interactive Gallery -->
+            <div id="exploded-gallery" class="glass-panel mt-6 p-4 sm:p-6 lg:p-8" role="region" aria-label="Trình xem chi tiết linh kiện">
+                <div class="grid items-center gap-8 lg:grid-cols-[1.2fr_.8fr]">
+                    <!-- Khung ảnh lớn có nút mở Lightbox -->
+                    <div class="gallery-stage relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-slate-950">
+                        <span id="gallery-badge" class="gallery-floating-tag">01 / TOÀN CẢNH PHÍM</span>
+                        <button type="button" id="btn-open-lightbox" class="gallery-zoom-trigger" aria-label="Phóng to ảnh chi tiết">
+                            <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
+                            <span>Phóng đại</span>
+                        </button>
+                        <img id="gallery-main-img"
+                             src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=1200&q=85"
+                             alt="Toàn cảnh bàn phím cơ CyberBoard Ultra"
+                             class="aspect-[16/10] w-full object-cover transition-transform duration-500"
+                             loading="lazy">
+                    </div>
+
+                    <!-- Thông số bóc tách tương ứng với Tab -->
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <span id="gallery-sub-label" class="text-xs font-bold uppercase tracking-widest text-cyan-400">
+                                Kiến trúc tổng thể
+                            </span>
+                            <h3 id="gallery-heading" class="mt-2 text-2xl font-bold text-white">
+                                Toàn Cảnh Khung Nhôm CNC 75% &amp; Keycap PBT
+                            </h3>
+                            <div id="gallery-body" class="mt-4 space-y-3 text-sm leading-relaxed text-slate-300"></div>
+
+                            <!-- Danh sách điểm nhấn kỹ thuật của Tab -->
+                            <ul id="gallery-highlights" class="mt-5 grid gap-2.5 border-t border-slate-700/70 pt-4 text-xs text-slate-200"></ul>
+                        </div>
+
+                        <!-- Thanh điều hướng ảnh Trước / Tiếp -->
+                        <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="icon-btn" data-gallery-prev aria-label="Linh kiện trước">
+                                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                                </button>
+                                <span id="gallery-indicator" class="px-3 text-xs font-mono font-semibold text-cyan-400">1 / 4</span>
+                                <button type="button" class="icon-btn" data-gallery-next aria-label="Linh kiện tiếp theo">
+                                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                                </button>
+                            </div>
+
+                            <button type="button" data-open-order class="btn btn-primary btn-sm">
+                                <span>Đặt Cấu Hình Này</span>
+                                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SECTION 5: ĐÁNH GIÁ TECH REVIEWER & FAQ HỎI ĐÁP ===================== -->
+    <section id="danh-gia" class="section" aria-labelledby="reviews-title">
+        <div class="container-site">
+            <header class="mx-auto max-w-3xl text-center">
+                <p class="eyebrow eyebrow--center">Verified Tech Reviewers &amp; Community</p>
+                <h2 id="reviews-title" class="section-title mt-3 text-white">
+                    Đánh Giá Thực Tế &amp; Giải Đáp Đặt Hàng Pre-Order
+                </h2>
+            </header>
+
+            <!-- Tổng quan điểm đánh giá -->
+            <div id="rating-summary" class="glass-panel mt-10 p-6 md:p-8"></div>
+
+            <!-- Danh sách Card đánh giá Tech Reviewer -->
+            <div id="review-list" class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3" aria-label="Danh sách đánh giá từ người dùng"></div>
+
+            <!-- Khung FAQ Accordion (Hỏi đáp đặt hàng) -->
+            <div class="mt-16 mx-auto max-w-4xl">
+                <div class="text-center">
+                    <p class="eyebrow eyebrow--center">Hỗ trợ thông tin minh bạch</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Câu Hỏi Thường Gặp Khi Đặt Trước (FAQ)</h3>
+                </div>
+
+                <div id="faq-accordion" class="mt-8 space-y-3">
+                    <!-- Render tự động từ preview.js / data.js -->
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <button type="button" data-open-order class="btn btn-primary btn-lg">
+                    <span>Giữ Suất Ưu Đãi Pre-Order Ngay</span>
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== POPUP TEST CẢ BÀN PHÍM (FULL KEYBOARD TESTER) ===================== -->
+    <dialog id="kb-tester-dialog" class="lightbox-dialog" aria-labelledby="kb-tester-title">
+        <div class="glass-panel mx-auto w-[96vw] max-w-5xl p-5 sm:p-7 border border-cyan-500/40 bg-slate-950/95 shadow-2xl">
+            <!-- Header -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-cyan-400">
+                        <i class="fa-solid fa-wave-square mr-1.5"></i>Interactive 75% Key Rollover &amp; Acoustic Tester
+                    </span>
+                    <h3 id="kb-tester-title" class="mt-1 text-xl font-bold text-white">
+                        Trình Gõ Thử Toàn Bộ Bàn Phím CyberBoard Ultra 75%
+                    </h3>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span id="kb-active-switch-badge" class="rounded-lg bg-cyan-500/15 border border-cyan-500/30 px-3 py-1.5 text-xs font-mono font-semibold text-cyan-300">
+                        Switch: Linear Silent (42g)
+                    </span>
+                    <button type="button" id="btn-close-kb-tester" class="icon-btn" aria-label="Đóng trình test bàn phím">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Thanh hiển thị phím vừa nhấn & Bộ đếm -->
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-xl bg-slate-900/90 px-4 py-3 border border-slate-800 text-xs">
+                <div class="flex items-center gap-4">
+                    <span class="text-slate-400">Phím vừa nhấn: <strong id="kb-last-key" class="ml-1 rounded bg-cyan-500/20 px-2 py-0.5 font-mono text-sm text-cyan-300">—</strong></span>
+                    <span class="text-slate-400">Mã phím: <strong id="kb-last-code" class="font-mono text-slate-200">—</strong></span>
+                    <span class="text-slate-400">Tổng số lần gõ: <strong id="kb-hit-count" class="font-mono text-amber-400">0</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-400 hidden sm:inline">Gõ trực tiếp trên bàn phím thật hoặc click chuột vào từng nút:</span>
+                    <button type="button" id="btn-reset-kb-tester" class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200 hover:border-cyan-400 hover:text-cyan-300 transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i>Reset phím đã test
+                    </button>
+                </div>
+            </div>
+
+            <!-- Khung Bàn Phím 75% Tương Tác -->
+            <div class="mt-5 overflow-x-auto pb-2">
+                <div id="virtual-keyboard-75" class="min-w-[780px] rounded-2xl border-2 border-cyan-500/30 bg-slate-900/95 p-4 shadow-inner select-none space-y-2">
+                    <!-- Các hàng phím được render tự động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Chú thích trạng thái -->
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+                <div class="flex items-center gap-5">
+                    <span class="flex items-center gap-2"><span class="inline-block h-3 w-3 rounded bg-slate-800 border border-slate-600"></span> Chưa nhấn</span>
+                    <span class="flex items-center gap-2"><span class="inline-block h-3 w-3 rounded bg-cyan-400 shadow shadow-cyan-400"></span> Đang nhấn (Phát âm Switch)</span>
+                    <span class="flex items-center gap-2"><span class="inline-block h-3 w-3 rounded bg-emerald-500/30 border border-emerald-400"></span> Đã kiểm tra (Pass)</span>
+                </div>
+                <span>Mẹo: Bạn có thể đổi loại Switch ở bên ngoài để nghe chất âm khác nhau khi gõ.</span>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- ===================== LIGHTBOX XEM ẢNH PHÓNG ĐẠI ===================== -->
+    <dialog id="gallery-lightbox" class="lightbox-dialog" aria-label="Xem ảnh phóng đại">
+        <div class="relative flex flex-col items-center justify-center p-4">
+            <button type="button" id="btn-close-lightbox" class="lightbox-close" aria-label="Đóng cửa sổ phóng đại">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="" class="max-h-[82vh] w-auto rounded-xl border border-cyan-500/40 object-contain shadow-2xl">
+            <p id="lightbox-caption" class="mt-3 text-sm font-semibold text-cyan-300"></p>
+        </div>
+    </dialog>
+
+    <!-- ===================== SECTION 6: POPUP MODAL ĐẶT HÀNG (#order-dialog) ===================== -->
+    <dialog id="order-dialog" class="order-dialog" data-tech-modal="true" aria-labelledby="order-dialog-title">
+        <div class="order-panel">
+            <!-- Header Modal -->
+            <div class="order-head flex items-center justify-between gap-4">
+                <div>
+                    <span class="text-[11px] font-bold uppercase tracking-widest text-cyan-400 block">
+                        <i class="fa-solid fa-bolt mr-1"></i>Pre-Order Reservation
+                    </span>
+                    <h2 id="order-dialog-title" class="text-lg sm:text-xl font-bold text-white">
+                        Đặt Trước CyberBoard Ultra
+                    </h2>
+                </div>
+                <button type="button" class="icon-btn" data-close-order aria-label="Đóng hộp thoại đặt hàng">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <!-- Nội dung cuộn của Form -->
+            <div class="order-scroll">
+                <form id="order-form" novalidate>
+                    @Html.AntiForgeryToken()
+                    <!-- Tóm tắt sản phẩm & Chọn biến thể trong Modal -->
+                    <div class="glass-panel p-4 mb-5">
+                        <div class="flex items-center gap-3.5 pb-3.5 border-b border-slate-700/70">
+                            <img id="modal-product-img" src="@heroImg" alt="CyberBoard Ultra" width="64" height="64"
+                                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=300&q=80';"
+                                 class="modal-product-img h-16 w-16 rounded-lg object-cover border border-cyan-500/30">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-semibold text-cyan-400" data-product-edition>Vỏ Nhôm CNC Nguyên Khối · Batch 01</p>
+                                <h3 class="text-base font-bold text-white truncate">CyberBoard Ultra 75%</h3>
+                                <p class="text-xs text-slate-300">Đơn giá ưu đãi: <strong class="text-amber-400" data-sum="unit">5.200.000đ</strong></p>
+                            </div>
+                        </div>
+
+                        <!-- Bộ chọn lại Màu sắc, Switch, Số lượng và Chế độ cọc -->
+                        <div class="mt-3.5 grid gap-3 sm:grid-cols-2">
+                            <div>
+                                <label for="modal-color" class="block text-xs font-semibold text-slate-300 mb-1">Màu vỏ CNC</label>
+                                <select id="modal-color" name="variantColor" class="form-control form-control-sm">
+                                    <option value="Anodized Cyber Purple">Anodized Cyber Purple (Tím ánh kim)</option>
+                                    <option value="Space Gray">Space Gray (Xám không gian)</option>
+                                    <option value="E-White">E-White (Trắng sứ tĩnh điện)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="modal-switch" class="block text-xs font-semibold text-slate-300 mb-1">Loại Switch</label>
+                                <select id="modal-switch" name="variantSwitch" class="form-control form-control-sm">
+                                    <option value="Linear Silent (42g)">Linear Silent (42g - Êm mượt)</option>
+                                    <option value="Tactile Thocky (55g)">Tactile Thocky (55g - Khấc trầm)</option>
+                                    <option value="Clicky Crisp (50g)">Clicky Crisp (50g - Đanh nảy)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Số lượng & Hình thức thanh toán/đặt cọc -->
+                        <div class="mt-3.5 grid gap-3 sm:grid-cols-2 items-end">
+                            <div>
+                                <label for="order-qty" class="block text-xs font-semibold text-slate-300 mb-1">
+                                    Số lượng (Tối đa <span data-max-qty>5</span> phím)
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" class="icon-btn h-10 w-10" data-qty="-1" aria-label="Giảm số lượng">
+                                        <i class="fa-solid fa-minus text-xs"></i>
+                                    </button>
+                                    <input type="number" id="order-qty" name="quantity" value="1" min="1" max="5"
+                                           class="form-control h-10 text-center font-bold w-20">
+                                    <button type="button" class="icon-btn h-10 w-10" data-qty="1" aria-label="Tăng số lượng">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                    </button>
+                                </div>
+                                <p id="e-quantity" class="field-error" role="alert"></p>
+                            </div>
+
+                            <div>
+                                <label for="modal-payment" class="block text-xs font-semibold text-slate-300 mb-1">Phương thức đặt trước</label>
+                                <select id="modal-payment" name="paymentMethod" class="form-control form-control-sm">
+                                    <option value="CHUYEN_KHOAN">Chuyển khoản QR Đặt cọc (1.000.000đ/phím)</option>
+                                    <option value="COD">Xác nhận giữ suất qua SĐT (COD cọc sau)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin người nhận -->
+                    <div class="grid gap-3.5 sm:grid-cols-2">
+                        <div>
+                            <label for="order-fullname" class="block text-xs font-semibold text-slate-300 mb-1">Họ và tên <span class="text-red-400">*</span></label>
+                            <input type="text" id="order-fullname" name="fullName" value="@userName" required placeholder="Nguyễn Văn A" class="form-control">
+                            <p id="e-fullName" class="field-error" role="alert"></p>
+                        </div>
+                        <div>
+                            <label for="order-phone" class="block text-xs font-semibold text-slate-300 mb-1">Số điện thoại <span class="text-red-400">*</span></label>
+                            <input type="tel" id="order-phone" name="phone" required placeholder="0912 345 678" class="form-control">
+                            <p id="e-phone" class="field-error" role="alert"></p>
+                        </div>
+                    </div>
+
+                    <div class="mt-3.5 grid gap-3.5 sm:grid-cols-2">
+                        <div>
+                            <label for="order-email" class="block text-xs font-semibold text-slate-300 mb-1">Email nhận thông báo lô hàng</label>
+                            <input type="email" id="order-email" name="email" value="@userEmail" placeholder="name@example.com" class="form-control">
+                        </div>
+                        <div>
+                            <label for="order-province" class="block text-xs font-semibold text-slate-300 mb-1">Tỉnh / Thành phố <span class="text-red-400">*</span></label>
+                            <select id="order-province" name="province" required class="form-control">
+                                <option value="">-- Chọn Tỉnh/Thành phố --</option>
+                            </select>
+                            <p id="e-province" class="field-error" role="alert"></p>
+                        </div>
+                    </div>
+
+                    <div class="mt-3.5">
+                        <label for="order-address" class="block text-xs font-semibold text-slate-300 mb-1">Địa chỉ nhận bàn phím <span class="text-red-400">*</span></label>
+                        <input type="text" id="order-address" name="addressLine" required placeholder="Số nhà, tên đường, phường/xã..." class="form-control">
+                        <p id="e-addressLine" class="field-error" role="alert"></p>
+                    </div>
+
+                    <div class="mt-3.5">
+                        <label for="order-note" class="block text-xs font-semibold text-slate-300 mb-1">Ghi chú custom thêm (tuỳ chọn)</label>
+                        <textarea id="order-note" name="note" rows="2" placeholder="VD: Yêu cầu mod sẵn stabilizer hoặc giao giờ hành chính..." class="form-control"></textarea>
+                    </div>
+
+                    <!-- Bảng tính tiền tự động (Tổng đơn & Tiền cọc Deposit) -->
+                    <div class="mt-5 rounded-xl bg-slate-900/90 border border-cyan-500/25 p-4 space-y-2 text-xs">
+                        <div class="flex justify-between text-slate-300">
+                            <span>Cấu hình đã chọn (<span data-sum="qty">1</span> phím):</span>
+                            <strong id="summary-variant-text" class="text-cyan-300">Cyber Purple · Linear Silent</strong>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>Tạm tính giá trị sản phẩm:</span>
+                            <span data-sum="subtotal" class="font-semibold text-white">5.200.000đ</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>Phí vận chuyển bảo hiểm:</span>
+                            <span data-sum="shipping" class="text-emerald-400 font-medium">Miễn phí giao hàng</span>
+                        </div>
+                        <div class="flex justify-between text-slate-200 pt-2 border-t border-slate-800 text-sm">
+                            <span>Tổng giá trị đơn Pre-Order:</span>
+                            <strong data-sum="total" class="text-white">5.200.000đ</strong>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-800 text-sm">
+                            <span class="text-amber-400 font-semibold">Số tiền đặt cọc giữ suất (Deposit):</span>
+                            <strong data-sum="deposit" class="text-lg font-extrabold text-cyan-400">1.000.000đ</strong>
+                        </div>
+                        <div class="flex justify-between text-[11px] text-slate-400">
+                            <span>Thanh toán phần còn lại khi nhận hàng:</span>
+                            <span data-sum="remaining">4.200.000đ</span>
+                        </div>
+                    </div>
+
+                    <p class="mt-3 text-[11px] text-slate-400" data-shipping-policy></p>
+                    <div id="order-status" class="form-status" role="status" aria-live="polite"></div>
+
+                    <div class="mt-5 flex items-center justify-end gap-3">
+                        <button type="button" class="btn btn-royal btn-sm" data-close-order>Huỷ</button>
+                        <button type="submit" class="btn btn-primary flex-1 sm:flex-none" data-submit>
+                            <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                            <span data-submit-label>Xác Nhận Đặt Trước &amp; Lấy Mã QR</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Khu vực hiển thị kết quả & Mã QR tự động sau khi Submit -->
+                <div id="order-result" tabindex="-1" hidden></div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- ===================== STICKY CTA BAR (MOBILE & SCROLL) ===================== -->
+    <div id="sticky-cta" class="sticky-cta" aria-hidden="true" inert>
+        <div class="container-site flex items-center justify-between gap-4">
+            <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate">CyberBoard Ultra 75% <span class="text-cyan-400" id="sticky-variant-label">(Cyber Purple)</span></p>
+                <p class="text-xs text-slate-300">
+                    Ưu đãi: <strong class="text-cyan-400" data-price>5.200.000đ</strong> · Cọc: <strong class="text-amber-400">1.000.000đ</strong>
+                </p>
+            </div>
+            <button type="button" data-open-order class="btn btn-primary btn-sm whitespace-nowrap">
+                <span>Đặt Trước</span>
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+</main>
+
+@section Scripts {
+    <script src="~/js/data.js" asp-append-version="true" defer></script>
+    <script src="~/js/preview.js" asp-append-version="true" defer></script>
+    <script src="~/js/order.js" asp-append-version="true" defer></script>
+
+    <style>
+        /* Nút Tab chọn Video nhanh */
+        .video-tab-btn {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            background-color: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .video-tab-btn:hover {
+                border-color: #22d3ee;
+                color: #22d3ee;
+            }
+
+            .video-tab-btn.active {
+                background-color: rgba(6, 182, 212, 0.15);
+                border-color: #22d3ee;
+                color: #22d3ee;
+                box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+            }
+
+        #rating-summary, #review-list {
+            color: #e2e8f0;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+            #rating-summary *, #review-list * {
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            #review-list article, #review-list > * {
+                transform: none !important;
+                filter: none !important;
+            }
+
+            #review-list :is(h3,h4,h5,strong,b) {
+                color: #f8fafc !important;
+            }
+
+            #review-list :is(p,blockquote,q) {
+                color: #cbd5e1 !important;
+            }
+
+            #review-list :is(time,small,.date) {
+                color: #94a3b8 !important;
+            }
+
+            #rating-summary :is(p,span,div,strong,small):not(.fa-star):not([class*="progress"]):not([class*="bar"]) {
+                color: #cbd5e1;
+            }
+
+            #rating-summary :is(strong,h3,h4,[class*="score"],[class*="big"],[class*="avg"]) {
+                color: #f8fafc !important;
+            }
+
+            #rating-summary [class*="fill"], #rating-summary [class*="bar"] > * {
+                background: linear-gradient(90deg,#22d3ee,#0ea5e9) !important;
+            }
+
+            #rating-summary i.fa-star, #review-list i.fa-star {
+                color: #fbbf24;
+            }
+
+        .modal-product-img {
+            transition: opacity .25s ease, transform .35s ease;
+        }
+
+            .modal-product-img.is-swapping {
+                opacity: 0;
+                transform: scale(.88) rotate(-5deg);
+            }
+    </style>
+
+    <script>
+        (function () {
+            window.addEventListener('load', function () {
+                // Mặc định nạp video đầu tiên khi tải trang
+                switchVideoById('linear');
+
+                // Lắng nghe click ở Thanh Nút Chuyển Video phía trên khung hình
+                var tabContainer = document.getElementById('video-tab-buttons');
+                if (tabContainer) {
+                    tabContainer.addEventListener('click', function (e) {
+                        var btn = e.target.closest('.video-tab-btn');
+                        if (!btn) return;
+                        var switchId = btn.getAttribute('data-switch-id');
+                        switchVideoById(switchId);
+                    });
+                }
+
+                // Lắng nghe click ở danh sách Switch bên phải
+                document.addEventListener('click', function (e) {
+                    var switchCard = e.target.closest('[data-sound-switch], .sound-switch-card, [data-switch-id]');
+                    if (switchCard && !e.target.closest('#video-tab-buttons')) {
+                        var switchId = switchCard.getAttribute('data-sound-switch')
+                            || switchCard.getAttribute('data-switch-id')
+                            || switchCard.id;
+                        if (switchId) {
+                            switchVideoById(switchId);
+                        }
+                    }
+                });
+            });
+
+            /* Hàm nạp iframe YouTube tương ứng với từng Switch ID */
+            function switchVideoById(switchId) {
+                var soundTests = (window.NGK && window.NGK.data && window.NGK.data.media && window.NGK.data.media.soundTests) || [];
+                var target = soundTests.find(function (item) {
+                    return item.id === switchId || switchId.includes(item.id);
+                }) || soundTests[0];
+
+                if (!target) return;
+
+                var videoContainer = document.getElementById('featured-video');
+                var videoTitle = document.getElementById('featured-video-title');
+
+                // Cập nhật trạng thái Active trên 3 nút Tab
+                var tabBtns = document.querySelectorAll('.video-tab-btn');
+                tabBtns.forEach(function (btn) {
+                    if (btn.getAttribute('data-switch-id') === target.id) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // Nạp Iframe YouTube trực tiếp
+                if (videoContainer && target.youtubeId) {
+                    videoContainer.innerHTML = `
+                                <iframe class="w-full h-full aspect-video rounded-xl border border-cyan-500/30 shadow-lg"
+                                    src="https://www.youtube.com/embed/${target.youtubeId}?autoplay=1&rel=0"
+                                    title="Sound Test ${target.name}"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>`;
+                }
+
+                if (videoTitle) {
+                    videoTitle.textContent = `Video Sound Test: ${target.name} (${target.specs})`;
+                }
+            }
+        })();
+        /* =========================================================
+           BỔ SUNG: SỬA VIDEO PLAYER & CHUYỂN VIDEO TEST THEO SWITCH
+           ========================================================= */
+        (function () {
+            window.addEventListener('load', function () {
+                initCustomVideoCover();
+                initFullKeyboardTester();
+            });
+
+            /* Hàm chuyển đổi Video YouTube theo loại Switch được chọn */
+            function loadSoundTestVideo(switchId) {
+                var soundTests = (window.NGK && window.NGK.data && window.NGK.data.media && window.NGK.data.media.soundTests) || [];
+                var target = soundTests.find(function (item) { return item.id === switchId; });
+
+                var videoContainer = document.getElementById('featured-video');
+                var videoTitle = document.getElementById('featured-video-title');
+
+                if (target && target.youtubeId && videoContainer) {
+                    videoContainer.innerHTML = `
+                                <iframe class="w-full aspect-video rounded-xl border border-cyan-500/40 shadow-xl"
+                                    src="https://www.youtube.com/embed/${target.youtubeId}?autoplay=1&rel=0"
+                                    title="Video Sound Test ${target.name}"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>`;
+
+                    if (videoTitle) {
+                        videoTitle.textContent = `Video Sound Test: ${target.name} (${target.specs})`;
+                    }
+                }
+            }
+
+            // Gắn sự kiện lắng nghe khi click chọn Switch ở bảng điều khiển bên phải
+            document.addEventListener('click', function (e) {
+                var switchBtn = e.target.closest('[data-sound-switch]');
+                if (switchBtn) {
+                    var switchId = switchBtn.getAttribute('data-sound-switch');
+                    loadSoundTestVideo(switchId);
+                }
+            });
+
+            /* Ảnh bìa nét cao cho Video mặc định khi mới tải trang */
+            function initCustomVideoCover() {
+                var videoContainer = document.getElementById('featured-video');
+                if (!videoContainer) return;
+
+                var mediaCfg = (window.NGK && window.NGK.data && window.NGK.data.media && window.NGK.data.media.featured) || {};
+                var thumbUrl = mediaCfg.thumbnail || 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=1200&q=85';
+                var videoTitle = mediaCfg.title || 'Review & Sound Test Bàn Phím Cơ Custom CyberBoard Ultra 75%';
+
+                videoContainer.innerHTML = `
+                            <div class="relative aspect-video w-full overflow-hidden rounded-xl border border-cyan-500/30 bg-slate-950 group cursor-pointer" id="custom-video-trigger">
+                                <img src="${thumbUrl}" alt="${videoTitle}" class="h-full w-full object-cover opacity-85 transition duration-500 group-hover:scale-105 group-hover:opacity-100">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+                                <div class="absolute top-3 left-3 flex items-center gap-2 rounded-md bg-slate-950/80 px-2.5 py-1 text-[11px] font-mono text-cyan-400 border border-cyan-500/30">
+                                    <span class="h-2 w-2 rounded-full bg-red-500 animate-ping"></span> REC · 4K 60FPS STUDIO AUDIO
+                                </div>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <div class="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-400/50 transition transform group-hover:scale-110">
+                                        <i class="fa-solid fa-play text-2xl ml-1"></i>
+                                    </div>
+                                    <span class="mt-3 rounded-full bg-slate-950/85 px-3.5 py-1 text-xs font-semibold text-white border border-slate-700">Bấm để xem Video Sound Test 4K</span>
+                                </div>
+                                <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-slate-300 font-mono">
+                                    <span>Mic: Neumann TLM 103 Stereo</span>
+                                    <span>04:32 / 4K UHD</span>
+                                </div>
+                            </div>`;
+
+                var trigger = document.getElementById('custom-video-trigger');
+                if (trigger) {
+                    trigger.addEventListener('click', function () {
+                        var soundTests = (window.NGK && window.NGK.data && window.NGK.data.media && window.NGK.data.media.soundTests) || [];
+                        var firstYtId = (soundTests[0] && soundTests[0].youtubeId) || mediaCfg.youtubeId || 'fC7oUOUEEi4';
+
+                        videoContainer.innerHTML = `
+                                    <iframe class="w-full aspect-video rounded-xl border border-cyan-400 shadow-xl"
+                                        src="https://www.youtube.com/embed/${firstYtId}?autoplay=1&rel=0"
+                                        title="Video Sound Test Studio"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen>
+                                    </iframe>`;
+                    });
+                }
+            }
+
+            /* Trình Test Cả Bàn Phím 75% */
+            function initFullKeyboardTester() {
+                var openBtn = document.getElementById('btn-open-kb-tester');
+                var dialog = document.getElementById('kb-tester-dialog');
+                var closeBtn = document.getElementById('btn-close-kb-tester');
+                var resetBtn = document.getElementById('btn-reset-kb-tester');
+                var kbContainer = document.getElementById('virtual-keyboard-75');
+
+                if (!openBtn || !dialog || !kbContainer) return;
+
+                var rows = [
+                    [
+                        { code: 'Escape', label: 'ESC', w: 'w-12' },
+                        { code: 'F1', label: 'F1', w: 'w-11' }, { code: 'F2', label: 'F2', w: 'w-11' },
+                        { code: 'F3', label: 'F3', w: 'w-11' }, { code: 'F4', label: 'F4', w: 'w-11' },
+                        { code: 'F5', label: 'F5', w: 'w-11' }, { code: 'F6', label: 'F6', w: 'w-11' },
+                        { code: 'F7', label: 'F7', w: 'w-11' }, { code: 'F8', label: 'F8', w: 'w-11' },
+                        { code: 'F9', label: 'F9', w: 'w-11' }, { code: 'F10', label: 'F10', w: 'w-11' },
+                        { code: 'F11', label: 'F11', w: 'w-11' }, { code: 'F12', label: 'F12', w: 'w-11' },
+                        { code: 'Delete', label: 'DEL', w: 'w-12' },
+                        { code: 'OLED', label: 'OLED 98%', w: 'w-20', isOled: true }
+                    ],
+                    [
+                        { code: 'Backquote', label: '` ~', w: 'w-11' },
+                        { code: 'Digit1', label: '1', w: 'w-11' }, { code: 'Digit2', label: '2', w: 'w-11' },
+                        { code: 'Digit3', label: '3', w: 'w-11' }, { code: 'Digit4', label: '4', w: 'w-11' },
+                        { code: 'Digit5', label: '5', w: 'w-11' }, { code: 'Digit6', label: '6', w: 'w-11' },
+                        { code: 'Digit7', label: '7', w: 'w-11' }, { code: 'Digit8', label: '8', w: 'w-11' },
+                        { code: 'Digit9', label: '9', w: 'w-11' }, { code: 'Digit0', label: '0', w: 'w-11' },
+                        { code: 'Minus', label: '-', w: 'w-11' }, { code: 'Equal', label: '=', w: 'w-11' },
+                        { code: 'Backspace', label: 'BACKSPACE', w: 'w-24' },
+                        { code: 'Home', label: 'HOME', w: 'w-14' }
+                    ],
+                    [
+                        { code: 'Tab', label: 'TAB', w: 'w-16' },
+                        { code: 'KeyQ', label: 'Q', w: 'w-11' }, { code: 'KeyW', label: 'W', w: 'w-11' },
+                        { code: 'KeyE', label: 'E', w: 'w-11' }, { code: 'KeyR', label: 'R', w: 'w-11' },
+                        { code: 'KeyT', label: 'T', w: 'w-11' }, { code: 'KeyY', label: 'Y', w: 'w-11' },
+                        { code: 'KeyU', label: 'U', w: 'w-11' }, { code: 'KeyI', label: 'I', w: 'w-11' },
+                        { code: 'KeyO', label: 'O', w: 'w-11' }, { code: 'KeyP', label: 'P', w: 'w-11' },
+                        { code: 'BracketLeft', label: '[', w: 'w-11' }, { code: 'BracketRight', label: ']', w: 'w-11' },
+                        { code: 'Backslash', label: '\\', w: 'w-16' },
+                        { code: 'PageUp', label: 'PGUP', w: 'w-14' }
+                    ],
+                    [
+                        { code: 'CapsLock', label: 'CAPS', w: 'w-20' },
+                        { code: 'KeyA', label: 'A', w: 'w-11' }, { code: 'KeyS', label: 'S', w: 'w-11' },
+                        { code: 'KeyD', label: 'D', w: 'w-11' }, { code: 'KeyF', label: 'F', w: 'w-11' },
+                        { code: 'KeyG', label: 'G', w: 'w-11' }, { code: 'KeyH', label: 'H', w: 'w-11' },
+                        { code: 'KeyJ', label: 'J', w: 'w-11' }, { code: 'KeyK', label: 'K', w: 'w-11' },
+                        { code: 'KeyL', label: 'L', w: 'w-11' }, { code: 'Semicolon', label: ';', w: 'w-11' },
+                        { code: 'Quote', label: "'", w: 'w-11' },
+                        { code: 'Enter', label: 'ENTER', w: 'w-24' },
+                        { code: 'PageDown', label: 'PGDN', w: 'w-14' }
+                    ],
+                    [
+                        { code: 'ShiftLeft', label: 'SHIFT', w: 'w-24' },
+                        { code: 'KeyZ', label: 'Z', w: 'w-11' }, { code: 'KeyX', label: 'X', w: 'w-11' },
+                        { code: 'KeyC', label: 'C', w: 'w-11' }, { code: 'KeyV', label: 'V', w: 'w-11' },
+                        { code: 'KeyB', label: 'B', w: 'w-11' }, { code: 'KeyN', label: 'N', w: 'w-11' },
+                        { code: 'KeyM', label: 'M', w: 'w-11' }, { code: 'Comma', label: ',', w: 'w-11' },
+                        { code: 'Period', label: '.', w: 'w-11' }, { code: 'Slash', label: '/', w: 'w-11' },
+                        { code: 'ShiftRight', label: 'SHIFT', w: 'w-20' },
+                        { code: 'ArrowUp', label: '▲', w: 'w-11' },
+                        { code: 'End', label: 'END', w: 'w-14' }
+                    ],
+                    [
+                        { code: 'ControlLeft', label: 'CTRL', w: 'w-14' },
+                        { code: 'MetaLeft', label: 'WIN', w: 'w-14' },
+                        { code: 'AltLeft', label: 'ALT', w: 'w-14' },
+                        { code: 'Space', label: 'CYBERBOARD ULTRA SPACEBAR', w: 'flex-1 min-w-[220px]' },
+                        { code: 'AltRight', label: 'ALT', w: 'w-12' },
+                        { code: 'ControlRight', label: 'FN', w: 'w-12' },
+                        { code: 'ArrowLeft', label: '◄', w: 'w-11' },
+                        { code: 'ArrowDown', label: '▼', w: 'w-11' },
+                        { code: 'ArrowRight', label: '►', w: 'w-11' }
+                    ]
+                ];
+
+                kbContainer.innerHTML = rows.map(function (row) {
+                    var keysHtml = row.map(function (k) {
+                        if (k.isOled) {
+                            return `<div class="${k.w} h-11 rounded-lg border border-cyan-400 bg-slate-950 px-2 flex flex-col items-center justify-center text-[10px] font-mono text-cyan-400 shadow-inner">
+                                                                <span>2.4G · 98%</span><strong class="text-amber-400" id="kb-oled-wpm">READY</strong>
+                                                            </div>`;
+                        }
+                        return `<button type="button" data-key-code="${k.code}" class="kb-key ${k.w} h-11 rounded-lg border border-slate-700 bg-slate-800/90 text-[11px] font-bold text-slate-200 shadow hover:border-cyan-400/60 active:translate-y-0.5 transition flex items-center justify-center px-1.5">${k.label}</button>`;
+                    }).join('');
+                    return `<div class="flex items-center gap-1.5">${keysHtml}</div>`;
+                }).join('');
+
+                var hitCount = 0;
+                var hitCountEl = document.getElementById('kb-last-key');
+                var lastCodeEl = document.getElementById('kb-last-code');
+                var totalHitsEl = document.getElementById('kb-hit-count');
+                var oledWpmEl = document.getElementById('kb-oled-wpm');
+                var audioCtx = null;
+
+                function playKeySwitchSound(keyCode) {
+                    try {
+                        var AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (!audioCtx) audioCtx = new AudioContext();
+                        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                        var activeNameEl = document.getElementById('sound-current-name');
+                        var switchTitle = activeNameEl ? activeNameEl.textContent.toLowerCase() : 'linear';
+
+                        var baseFreq = 175;
+                        var clickLevel = 0.1;
+                        if (switchTitle.indexOf('tactile') !== -1) { baseFreq = 220; clickLevel = 0.28; }
+                        if (switchTitle.indexOf('clicky') !== -1) { baseFreq = 310; clickLevel = 0.85; }
+
+                        if (keyCode === 'Space' || keyCode === 'Enter' || keyCode === 'Backspace') {
+                            baseFreq *= 0.78;
+                        } else {
+                            baseFreq += (Math.random() * 18 - 9);
+                        }
+
+                        var now = audioCtx.currentTime;
+                        var osc = audioCtx.createOscillator();
+                        var gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(baseFreq, now);
+                        osc.frequency.exponentialRampToValueAtTime(55, now + 0.075);
+
+                        gain.gain.setValueAtTime(0.45, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.085);
+
+                        var clickOsc = audioCtx.createOscillator();
+                        var clickGain = audioCtx.createGain();
+                        clickOsc.type = 'sine';
+                        clickOsc.frequency.setValueAtTime(switchTitle.indexOf('clicky') !== -1 ? 2900 : 1200, now);
+                        clickGain.gain.setValueAtTime(clickLevel * 0.25, now);
+                        clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+                        clickOsc.connect(clickGain);
+                        clickGain.connect(audioCtx.destination);
+                        clickOsc.start(now);
+                        clickOsc.stop(now + 0.025);
+                    } catch (e) { }
+                }
+
+                function triggerKeyVisual(keyCode, labelText) {
+                    var btn = kbContainer.querySelector('[data-key-code="' + keyCode + '"]');
+                    hitCount++;
+                    if (hitCountEl) hitCountEl.textContent = labelText || (btn ? btn.textContent : keyCode);
+                    if (lastCodeEl) lastCodeEl.textContent = keyCode;
+                    if (totalHitsEl) totalHitsEl.textContent = String(hitCount);
+                    if (oledWpmEl) oledWpmEl.textContent = hitCount + ' HITS';
+
+                    playKeySwitchSound(keyCode);
+
+                    if (btn) {
+                        btn.classList.remove('bg-slate-800/90', 'border-slate-700', 'bg-emerald-500/25', 'border-emerald-400');
+                        btn.classList.add('bg-cyan-400', 'text-slate-950', 'border-cyan-300', 'scale-95');
+
+                        setTimeout(function () {
+                            btn.classList.remove('bg-cyan-400', 'text-slate-950', 'border-cyan-300', 'scale-95');
+                            btn.classList.add('bg-emerald-500/25', 'border-emerald-400', 'text-emerald-200');
+                        }, 140);
+                    }
+                }
+
+                kbContainer.addEventListener('mousedown', function (e) {
+                    var keyBtn = e.target.closest('.kb-key');
+                    if (!keyBtn) return;
+                    var code = keyBtn.getAttribute('data-key-code');
+                    triggerKeyVisual(code, keyBtn.textContent.trim());
+                });
+
+                window.addEventListener('keydown', function (e) {
+                    if (!dialog.open) return;
+                    if (e.key === 'Escape' && e.ctrlKey) return;
+                    e.preventDefault();
+                    triggerKeyVisual(e.code, e.key.toUpperCase());
+                });
+
+                openBtn.addEventListener('click', function () {
+                    var activeNameEl = document.getElementById('sound-current-name');
+                    var badgeEl = document.getElementById('kb-active-switch-badge');
+                    if (activeNameEl && badgeEl) {
+                        badgeEl.textContent = 'Switch: ' + activeNameEl.textContent;
+                    }
+                    dialog.showModal();
+                });
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function () {
+                        dialog.close();
+                    });
+                }
+
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', function () {
+                        hitCount = 0;
+                        if (hitCountEl) hitCountEl.textContent = '—';
+                        if (lastCodeEl) lastCodeEl.textContent = '—';
+                        if (totalHitsEl) totalHitsEl.textContent = '0';
+                        if (oledWpmEl) oledWpmEl.textContent = 'READY';
+                        kbContainer.querySelectorAll('.kb-key').forEach(function (btn) {
+                            btn.className = btn.className
+                                .replace(/bg-emerald-500\/25|border-emerald-400|text-emerald-200/g, '')
+                                .trim() + ' bg-slate-800/90 border-slate-700 text-slate-200';
+                        });
+                    });
+                }
+            }
+        })();
+    </script>
+}
