@@ -1,161 +1,195 @@
-# WebBanSach – Landing page bán sách "Nhà Giả Kim"
+# CyberCraft Labs – E-Commerce & Pre-Order Landing Page Thiết Bị Công Nghệ Custom
 
-Website bán một đầu sách (Nhà Giả Kim – Paulo Coelho) viết bằng **ASP.NET Core MVC (.NET 10)**, **Entity Framework Core** và **SQL Server**. Trang gồm giới thiệu sách, tác giả, video, đọc thử, đánh giá của độc giả và form đặt hàng nhanh.
+Website giới thiệu và nhận đặt hàng trước (Pre-Order) các dòng bàn phím cơ Custom cao cấp (**CyberBoard Ultra 75%**), được xây dựng trên nền tảng **ASP.NET Core MVC (.NET 10)**, **Entity Framework Core** và **SQL Server**. 
 
-## Tính năng
+Hệ thống tích hợp đầy đủ tính năng tương tác âm học thời gian thực (Web Audio API), trải nghiệm bóc tách linh kiện (Exploded View), đặt cọc giữ suất và trang **Admin Dashboard** quản trị toàn diện.
 
-- **Landing page** lấy dữ liệu sách, tác giả và đánh giá từ database.
-- **Đọc thử** với hiệu ứng lật trang (StPageFlip).
-- **Slider đánh giá** (Slick carousel) kèm thống kê số sao.
-- **Đặt hàng nhanh** trong modal:
-  - gửi bằng `fetch`, có spinner trong lúc gửi;
-  - validate ở cả client (JavaScript) và server (FluentValidation);
-  - chống CSRF bằng `[ValidateAntiForgeryToken]`;
-  - giá và tổng tiền luôn tính lại ở server từ database;
-  - thông báo thành công hiện ở góc phải trên, tự ẩn sau 5 giây.
-- **Tiện ích tạo mã QR** chuyển khoản ngân hàng (QRCoder + SkiaSharp) trong `Helpers/Utils.cs`.
+---
 
-## Công nghệ
-| Thành phần | Công nghệ |
+## 🌟 Tính Năng Nổi Bật
+
+### 1. Dành Cho Khách Hàng (Customer Landing Page)
+- **Hero Pre-Order & Đếm Ngược Giữ Suất**: Đồng hồ đếm ngược ưu đãi, thanh tiến độ số suất còn lại thời gian thực và bộ chọn nhanh màu sắc vỏ nhôm CNC (Anodized Cyber Purple, Space Gray, E-White) / Switch.
+- **Interactive Sound Lab**: Trình nghe thử chất âm gõ phím nguyên bản (Stock) hỗ trợ 3 hệ Switch (*Linear Silent 42g*, *Tactile Thocky 55g*, *Clicky Crisp 50g*) tích hợp Waveform Visualizer.
+- **Interactive 75% Key Rollover Tester**: Trình gõ thử toàn bộ 81 phím trên bàn phím ảo ngay trong trình duyệt, tự động phát âm thanh switch bằng **Web Audio API** khi nhấn phím thật hoặc click chuột.
+- **Bóc Tách Cấu Trúc Linh Kiện (Exploded Gallery)**: Xem chi tiết từng lớp vật liệu (Vỏ nhôm 6063, Gasket Mount, PCB Flex-cut, 5 lớp Foam Poron) kết hợp cửa sổ phóng đại Lightbox độ phân giải cao.
+- **Đặt Hàng Pre-Order Nhanh**:
+  - Modal đặt cọc tự động điền Email/Họ tên của tài khoản đang đăng nhập để đồng bộ Lịch sử giao dịch.
+  - Tự động tính tổng đơn và tiền đặt cọc giữ suất (Deposit).
+  - Bảo mật Anti-CSRF với `[ValidateAntiForgeryToken]`, kiểm tra ràng buộc 2 lớp (Client & Server với FluentValidation).
+  - Hỗ trợ 2 hình thức: Chuyển khoản QR Đặt cọc hoặc Xác nhận giữ suất COD.
+
+### 2. Trang Quản Trị Hệ Thống (Admin Dashboard - `/Admin`)
+- **Giao Diện Dark Vibe**: Thiết kế chuẩn tone màu Cyber-Dark (#0b0f19), khoảng cách hiển thị thoáng đãng và chuẩn hóa Font Size.
+- **Single-Page Workspace**: Chuyển đổi linh hoạt 8 phân khu quản trị mà không nạp lại trang:
+  - **Dashboard Thống Kê**: Doanh thu tổng, tổng số đơn đặt cọc, đơn chờ xác nhận và biểu đồ phân phối trạng thái đơn hàng.
+  - **Quản Lý Đơn Đặt Hàng (`DonDatHang`)**: Bộ lọc tìm kiếm nhanh theo mã đơn, SĐT, tên khách; đổi trạng thái đơn hàng trực tiếp qua AJAX.
+  - **Quản Lý Thiết Bị (`ThongTinThietBi`)**: Thêm/Sửa/Xóa thông số kỹ thuật bàn phím, giá đặt trước, link Youtube Review và bộ sưu tập ảnh Hands-on.
+  - **Quản Lý Thương Hiệu (`ThuongHieu`)**: Cấu hình các đối tác và logo thương hiệu.
+  - **Trạng Thái Đơn Hàng (`TinhTrangDonHang`)**: Cấu hình quy trình xử lý đơn.
+  - **Quản Lý Đánh Giá (`DanhGia`)**: Duyệt và xóa đánh giá từ Reviewer.
+  - **Quản Lý Tài Khoản & Phân Quyền (`TaiKhoan`)**: Phân quyền Hạn người dùng (`Admin` / `User`), hỗ trợ cấp lại mật khẩu.
+  - **Cài Đặt Hệ Thống (`CaiDat`)**: Cấu hình chuỗi/JSON dạng Key/Value.
+
+---
+
+## 🛠 Công Nghệ Sử Dụng
+
+| Thành Phần | Công Nghệ & Thư Viện |
 |---|---|
-| Backend | ASP.NET Core MVC (.NET 10) |
-| ORM | Entity Framework Core 10 (SQL Server) |
-| Validation | FluentValidation.DependencyInjectionExtensions |
-| Giao diện | Razor View, Tailwind CSS v4 (bản browser), Font Awesome |
-| JavaScript | Vanilla JS, jQuery + Slick carousel, StPageFlip |
-| Mã QR | QRCoder, SkiaSharp |
+| **Backend** | ASP.NET Core MVC (.NET 10), C# 13 |
+| **ORM & Database** | Entity Framework Core 10, SQL Server (`WebGadgetDB`) |
+| **Authentication & Security** | Cookie Authentication (Claims-based), PasswordHasher, Anti-CSRF Token |
+| **Validation** | FluentValidation |
+| **Frontend UI** | Razor Views, Tailwind CSS v4, Font Awesome 6 Pro, CSS Custom Properties |
+| **Interactive & Audio** | Vanilla JavaScript (ES6+), Web Audio API (Tổng hợp âm thanh Switch) |
+| **Popup & Thông Báo** | SweetAlert2 (Tối ưu Z-Index cao hơn Top-layer Dialog) |
 
-## Cấu trúc thư mục
+---
+
+## 📂 Cấu Trúc Thư Mục Project
 
 ```
 WebBanSach/
-├── WebBanSach.slnx
-└── WebBanSach/
-    ├── Controllers/        # HomeController (Index, DatHang)
-    ├── Helpers/            # WebConstants, Utils (tạo mã QR)
-    ├── Migrations/         # Migration EF Core (tạo bảng + seed dữ liệu)
-    ├── Models/
-    │   ├── EF/             # ApplicationDbContext
-    │   ├── Entities/       # Các bảng trong database
-    │   ├── Requests/       # DatHangRequest
-    │   └── Responses/      # Responses (Status, Message, Error)
-    ├── Services/           # IBookServices / BookServices – toàn bộ truy vấn DB
-    ├── Validators/         # DatHangRequestValidator (FluentValidation)
-    ├── Views/              # Razor views
-    └── wwwroot/            # css, js, images
+├── Controllers/
+│   ├── AccountController.cs       # Đăng nhập, Đăng ký, Đổi thông tin, Lịch sử giao dịch
+│   ├── AdminController.cs         # Quản trị hệ thống (/Admin - Đã khóa [Authorize(Roles="Admin")])
+│   ├── HomeController.cs          # Hiển thị Landing page chính
+│   └── OrderController.cs         # Xử lý tạo mới đơn đặt hàng Pre-Order
+├── Helpers/
+│   ├── EmailValidatorHelper.cs    # Chuẩn hóa & Validate Email
+│   └── WebConstants.cs            # Các hằng số định cấu hình
+├── Models/
+│   ├── EF/
+│   │   └── ApplicationDbContext.cs # Khai báo 7 DbSet và cấu hình Precision
+│   ├── Entities/                  # 7 Entity Mapping CSDL
+│   │   ├── CaiDat.cs
+│   │   ├── DanhGia.cs
+│   │   ├── DonDatHang.cs
+│   │   ├── TaiKhoan.cs
+│   │   ├── ThongTinThietBi.cs
+│   │   ├── ThuongHieu.cs
+│   │   └── TinhTrangDonHang.cs
+│   └── ViewModels/                # DTOs & ViewModels cho Admin và Đặt hàng
+│       ├── AdminViewModels.cs
+│       └── AccountViewModels.cs
+├── Views/
+│   ├── Admin/
+│   │   └── Index.cshtml           # Single-Page Workspace Admin
+│   ├── Home/
+│   │   └── Index.cshtml           # Landing Page CyberBoard Ultra 75%
+│   └── Shared/
+│       ├── _AdminLayout.cshtml    # Master Layout dành riêng cho Admin (Dark Theme)
+│       └── _Layout.cshtml         # Master Layout Landing Page
+└── wwwroot/
+    ├── css/
+    │   ├── admin.css              # Styling độc lập cho Admin Center (Dark Vibe)
+    │   └── site.css
+    └── js/
+        ├── data.js                # Dữ liệu tĩnh mảng cấu hình âm thanh, linh kiện & FAQ
+        ├── order.js               # Logic xử lý Form đặt hàng Pre-Order
+        └── preview.js             # Controls cho Gallery Lightbox & Sound Lab
 ```
 
-Controller không dùng trực tiếp `ApplicationDbContext`. Mọi truy vấn database nằm trong `BookServices` và được inject vào controller qua `IBookServices`.
+---
 
-## Database
+## 🗄 7 Bảng CSDL (Database Schema)
 
-Các bảng chỉ có khóa chính, không thiết lập relationship. Việc ghép dữ liệu giữa các bảng được làm trong code C#.
+| Tên Bảng | Khóa Chính | Khóa Ngoại / Liên Kết | Mô Tả |
+|---|---|---|---|
+| `ThongTinThietBis` | `Uid` (int) | `MaThuongHieu` | Danh mục sản phẩm công nghệ (bàn phím, giá bán, cấu hình âm học) |
+| `ThuongHieus` | `MaThuongHieu` (string) | - | Thông tin hãng sản xuất (Logo, giới thiệu) |
+| `DonDatHangs` | `Uid` (int) | `UidThietBi` | Thông tin đơn đặt cọc Pre-Order của khách hàng |
+| `TinhTrangDonHangs` | `MaTinhTrang` (string) | - | Trạng thái quy trình đơn hàng (`MOI`, `CHO_COC`, `HOAN_TAT`...) |
+| `DanhGias` | `Uid` (int) | - | Nhận xét & đánh giá sao từ các Tech Reviewer |
+| `TaiKhoans` | `Uid` (int) | - | Tài khoản người dùng & Quản trị viên (`Role` = 'Admin' / 'User') |
+| `CaiDats` | `Uid` (int) | - | Lưu cấu hình hệ thống dạng `SettingKey` / `SettingContent` |
 
-| Bảng | Khóa chính | Mô tả |
-|---|---|---|
-| `ThongTinSachs` | `Uid` | Thông tin sách: tên, thể loại, tiêu đề, giá gốc, giá bán, ảnh, link YouTube, `MaTacGia` |
-| `TacGias` | `MaTacGia` | Tác giả; `GioiThieu` lưu dạng HTML |
-| `DanhGias` | `Uid` | Đánh giá của độc giả |
-| `DonDatHangs` | `Uid` | Đơn đặt hàng |
-| `TinhTrangDonHangs` | `MaTinhTrang` | Danh mục tình trạng đơn hàng |
-| `TaiKhoans` | `Uid` | Tài khoản quản trị |
-| `CaiDats` | `Uid` | Cấu hình dạng key/value |
+---
 
-Migration `data_seeding` thêm sẵn dữ liệu mẫu cho sách, tác giả và 6 đánh giá.
+## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy
 
-## Cài đặt và chạy
+### Yêu Cầu Môi Trường
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- **SQL Server 2019+** (hoặc SQL Express / LocalDB)
+- Visual Studio 2022 (phiên bản 17.10+) hoặc VS Code
 
-### Yêu cầu
+### Các Bước Thực Hiện
 
-- [.NET SDK 10](https://dotnet.microsoft.com/download)
-- SQL Server (bản Express hoặc LocalDB đều được)
-- Công cụ EF Core: `dotnet tool install --global dotnet-ef`
-
-### 1. Clone project
-
+#### 1. Clone Dự Án
 ```bash
-git clone <url-repo>
+git clone <repository-url>
 cd WebBanSach/WebBanSach
 ```
 
-### 2. Cấu hình chuỗi kết nối
+#### 2. Cấu Hình Chuỗi Kết Nối CSDL
+Mở file `appsettings.json` và cập nhật thông số kết nối SQL Server tại key `WebBanSachCST`:
 
-Ứng dụng đọc chuỗi kết nối tên `WebBanSachCST`. Nên lưu bằng **User Secrets** để không đẩy mật khẩu lên GitHub:
-
-```bash
-dotnet user-secrets init
-dotnet user-secrets set "ConnectionStrings:WebBanSachCST" "Server=localhost;Database=WebBanSach;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True"
+```json
+"ConnectionStrings": {
+  "WebBanSachCST": "Server=YOUR_SERVER_NAME;Database=WebGadgetDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;"
+}
 ```
 
-### 3. Tạo database
+#### 3. Tạo CSDL & Migration (EF Core)
+Mở **Package Manager Console** hoặc Terminal tại thư mục project và chạy:
 
 ```bash
 dotnet ef database update
 ```
 
-Sau đó thêm danh mục tình trạng đơn hàng (đơn mới đặt có mã `MOI`):
+#### 4. Phân Quyền Tài Khoản Admin
+Sau khi đăng ký một tài khoản trên giao diện web, mở **SQL Server Management Studio (SSMS)** và cập nhật quyền `Admin` cho tài khoản đó:
 
 ```sql
-INSERT INTO TinhTrangDonHangs (MaTinhTrang, TenTinhTrang, Ordering) VALUES
-(N'MOI',            N'Mới đặt hàng',   1),
-(N'DANG_XU_LY',     N'Đang xử lý',     2),
-(N'DANG_GIAO_HANG', N'Đang giao hàng', 3),
-(N'DA_NHAN',        N'Đã nhận',        4),
-(N'HOAN_TRA',       N'Hoàn trả',       5),
-(N'DOI_HANG',       N'Đổi hàng',       6);
+USE WebGadgetDB;
+GO
+
+UPDATE TaiKhoans 
+SET Role = 'Admin' 
+WHERE Email = 'your-email@example.com';
+GO
 ```
 
-### 4. Chạy ứng dụng
-
+#### 5. Khởi Chạy Ứng Dụng
 ```bash
 dotnet run
 ```
+Mở trình duyệt và truy cập `https://localhost:7144`.
 
-Mở địa chỉ **https** được in ra trong terminal. Cookie session đặt `SecurePolicy = Always` nên cần chạy bằng https.
+---
 
-## Đặt hàng
+## 🔐 Truy Cập Trang Quản Trị (Admin Center)
 
-Form đặt hàng gửi `POST /Home/DatHang` dạng JSON, kèm header `RequestVerificationToken` lấy từ `@Html.AntiForgeryToken()` trong form.
+1. Đăng xuất tài khoản hiện tại (nếu đang đăng nhập dưới dạng `User`).
+2. Đăng nhập lại với tài khoản đã được cấp quyền `Admin` ở bước trên.
+3. Hệ thống sẽ **tự động chuyển hướng** vào Dashboard, hoặc bạn có thể truy cập trực tiếp đường dẫn:
+   `https://localhost:7144/Admin`
 
-**Request** (`DatHangRequest`):
+---
 
-```json
-{
-  "uidSach": 1,
-  "soLuong": 2,
-  "tenKhachHang": "Nguyễn Văn A",
-  "sdt": "0912345678",
-  "diaChi": "12 Lê Lợi, Phường Bến Thành, TP. Hồ Chí Minh",
-  "maHinhThucThanhToan": "COD",
-  "ghiChu": "Giao giờ hành chính"
-}
-```
+## ⚡ API Endpoint Đặt Hàng (`CreateOrderDto`)
 
-`maHinhThucThanhToan` nhận một trong hai giá trị: `COD` hoặc `CHUYEN_KHOAN`.
-
-**Response** (`Responses`):
+**Request**: `POST /Order/CreateOrder` (JSON Format)
 
 ```json
 {
-  "status": 200,
-  "message": "Đặt hàng thành công! Mã đơn của bạn là DH261024103015123. ...",
-  "error": null
+  "fullName": "Nguyễn Lê Quốc Anh",
+  "phone": "0912345678",
+  "email": "anhnguyen14nt@gmail.com",
+  "province": "TP. Hồ Chí Minh",
+  "addressLine": "123 Đường Nguyễn Huệ, Quận 1",
+  "quantity": 1,
+  "totalAmount": 5200000,
+  "paymentMethod": "CHUYEN_KHOAN",
+  "note": "Yêu cầu mod sẵn Stab Lubed 205g0"
 }
 ```
 
-Khi dữ liệu không hợp lệ, server trả `400` với `message` là lỗi đầu tiên và `error` là toàn bộ lỗi.
-
-**Quy tắc validate** (giống nhau ở client và server):
-
-- số lượng từ 1 đến 10;
-- họ tên từ 2 đến 100 ký tự;
-- số điện thoại di động Việt Nam;
-- địa chỉ từ 5 đến 200 ký tự;
-- ghi chú tối đa 300 ký tự.
-
-Phí giao hàng là 30.000đ, miễn phí cho đơn từ 300.000đ. Các con số này khai báo ở `Helpers/WebConstants.cs` và `wwwroot/js/data.js`, khi đổi cần sửa cả hai nơi.
-
-## Ghi chú
-
-- Dữ liệu cửa hàng (tên, địa chỉ, số điện thoại...) và các trang đọc thử vẫn nằm trong `wwwroot/js/data.js`. Các mục ghi `TODO` là dữ liệu tạm.
-- Tailwind CSS đang dùng bản chạy trên trình duyệt để tiện học tập. Khi triển khai thật nên build bằng Tailwind CLI.
+**Response**:
+```json
+{
+  "success": true,
+  "maDonHang": "DH20261105213000"
+}
+```
